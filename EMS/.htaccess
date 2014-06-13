@@ -1,0 +1,8 @@
+# On suit les liens symboliques
+Options +FollowSymlinks
+
+# Activation du mod rewrite d'Apache
+#RewriteEngine On
+
+#localhost/test/index.php/membres/connexion
+#RewriteRule ^index.php/([a-z0-9\-]+)/([a-z0-9\-]+)$ /test/index.php?module=$1&action=$2
