@@ -8,5 +8,5 @@ session_destroy();
 setcookie('id', '');
 setcookie('connexion_auto', '');
 
-//include CHEMIN_VUE.'deconnexion_ok.php';
-header('Location: /test/index.php');
+//require_once CHEMIN_VUE.'deconnexion_ok.php';
+header('Location: ' . CHEMIN_BASE . 'index.php');

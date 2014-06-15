@@ -3,7 +3,8 @@
 
 
 
-//echo $form_membre;
+echo $formMembre;
+
 ?>
 
 </div>

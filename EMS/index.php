@@ -1,7 +1,7 @@
 <?php
 
 // Initialisation
-include 'global/init.php';
+require_once 'global/init.php';
 
 // Début de la tamporisation de sortie
 ob_start();
@@ -16,28 +16,25 @@ if (!empty($_GET['module'])) {
 	
 	// Si l'action existe, on l'exécute
 	if (is_file($module.$action)) {
-	echo 'test1';
-		include $module.$action;
+		require_once $module.$action;
 
 	// Sinon, on affiche la page d'accueil !
 	} else {
-		echo 'test2';
-		include 'global/accueil.php';
+		require_once 'global/accueil.php';
 	}
 
 // Module non specifié ou invalide ? On affiche la page d'accueil !
 } else {
-echo 'test3';
-	include 'global/accueil.php';
+	require_once 'global/accueil.php';
 }
 
 // Fin de la tamporisation de sortie
 $contenu = ob_get_clean();
 
 // Début du code HTML
-include 'global/haut.php';
+require_once 'global/haut.php';
 
 echo $contenu;
 
 // Fin du code HTML
-include 'global/bas.php';
+require_once 'global/bas.php';

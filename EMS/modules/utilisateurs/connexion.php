@@ -4,12 +4,12 @@
 if (utilisateur_est_connecte()) {
 
 	// On affiche la page d'erreur comme quoi l'utilisateur est déjà connecté   
-	include CHEMIN_VUE_GLOBALE.'erreur_deja_connecte.php';
+	require_once CHEMIN_VUE_GLOBALE.'erreur_deja_connecte.php';
 	
 } else {
 
 	// Ne pas oublier d'inclure la librairie Form
-	include CHEMIN_LIB.'form.php';
+	require_once CHEMIN_LIB.'form.php';
 
 	// "formulaire_connexion" est l'ID unique du formulaire
 	$form_connexion = new Form('formulaire_connexion');
@@ -38,7 +38,7 @@ if (utilisateur_est_connecte()) {
 			$form_connexion->get_cleaned_data('nom_utilisateur', 'mot_de_passe');
 		
 		// On veut utiliser le modèle des utilisateurs (~/modeles/utilisateurs.php)
-		//include_once(CHEMIN_MODELE.'utilisateurs.php');
+		//require_once_once(CHEMIN_MODELE.'utilisateurs.php');
 		
 		// combinaison_connexion_valide() est définit dans ~/modeles/utilisateurs.php
 		$id_utilisateur = utilisateur::authentifier($nom_utilisateur, sha1($mot_de_passe)); // combinaison_connexion_valide($nom_utilisateur, sha1($mot_de_passe));
@@ -54,20 +54,20 @@ if (utilisateur_est_connecte()) {
 			$_SESSION['utilisateur'] = $utilisateur;
 			
 			// Affichage de la confirmation de la connexion
-			//include CHEMIN_VUE.'connexion_ok.php';
-			header('Location: /test/index.php');
+			//require_once CHEMIN_VUE.'connexion_ok.php';
+			header('Location: ' . CHEMIN_BASE . 'index.php');
 		
 		} else {
 
 			$erreurs_connexion[] = "Couple nom d'utilisateur / mot de passe inexistant.";
 			
 			// On réaffiche le formulaire de connexion
-			include CHEMIN_VUE.'formulaire_connexion.php';
+			require_once CHEMIN_VUE.'formulaire_connexion.php';
 		}
 		
 	} else {
 
 		// On réaffiche le formulaire de connexion
-		include CHEMIN_VUE.'formulaire_connexion.php';
+		require_once CHEMIN_VUE.'formulaire_connexion.php';
 	}
 }

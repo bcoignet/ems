@@ -4,6 +4,7 @@ define ('CHEMIN_LIB', 'libs/');
 define ('CHEMIN_VUE', 'vues/'); 
 define ('CHEMIN_MODELE', 'modeles/'); 
 define ('CHEMIN_VUE_GLOBALE', 'vues_globales/');
+define ('CHEMIN_BASE', '/EMS/');
 
 define ('SQL_USERNAME', 'root'); 
 define ('SQL_PASSWORD', ''); 

@@ -1,1 +1,1 @@
-<?phpif (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_ADMIN) {	include CHEMIN_MODELE.'membres.php';	$membres = membre::listing();	include CHEMIN_VUE.'listing_membres.php';} else {	header('Location: /test/index.php');}
+<?phpif (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_ADMIN) {	require_once CHEMIN_MODELE.'membres.php';	$membres = membre::listing();	require_once CHEMIN_VUE.'listing_membres.php';} else {	header('Location: ' . CHEMIN_BASE . 'index.php');}
