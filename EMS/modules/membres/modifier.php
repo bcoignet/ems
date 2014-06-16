@@ -14,6 +14,8 @@ if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_
 	if (isset($_POST['uniqid']) && $_POST['uniqid'] === 'formulaire_modifier_membre') {
 		if ($formMembre->is_valid($_POST)) {
 			$membre->update($formMembre);
+			$message = 'Modification du membre ' . $membre->getPrenom() . ' ' . $membre->getNom() . ' enregistré.';
+			header('location: ' . CHEMIN_BASE . 'index.php?module=membres&action=listing&message=' . $message); //TODO ameliorer
 		}
 
 	}

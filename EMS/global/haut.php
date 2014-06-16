@@ -14,3 +14,11 @@
 <?php require_once 'global/menu.php'; ?>
 
 	<div id="centre">
+	<?php 
+	
+	if (isset($_GET['message'])) {
+		$message = $_GET['message'];
+		echo '<span id="message">' . $message . '</span>';
+	}
+	
+	?>
