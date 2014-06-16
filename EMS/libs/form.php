@@ -34,7 +34,7 @@ class Form {
 
 		if (false !== $uniqid && in_array($uniqid, self::$instances)) {
 
-			trigger_error("Un formulaire identifié par '$uniqid' existe déj�  ! Conflits potentiels détectés !", E_USER_WARNING);
+			trigger_error("Un formulaire identifié par '$uniqid' existe déj�  ! Conflits potentiels détectés !", E_USER_WARNING);
 
 		} else {
 
@@ -188,7 +188,7 @@ class Form {
 
 		} else {
 
-			trigger_error("Un champ nommé '$name' existe déj�  dans le formulaire identifié par '{$this->uniqid}'.", E_USER_WARNING);
+			trigger_error("Un champ nommé '$name' existe déj�  dans le formulaire identifié par '{$this->uniqid}'.", E_USER_WARNING);
 		}
 	}
 
@@ -241,7 +241,7 @@ class Form {
 	public function __toString() {
 
 		$tab = func_num_args() > 0 ? func_get_arg(0) : '';
-		
+
 		$o = $tab.'<form'.$this->attrs.'>'."\n";
 
 		if (empty($this->fieldsets)) {
@@ -446,7 +446,7 @@ abstract class Form_Field {
 
 		if (!isset(self::$error_list[$id_error])) {
 
-			trigger_error("Le message d'erreur identifié par '$id_error' ne s'applique pas �  la classe ".get_class($this).".");
+			trigger_error("Le message d'erreur identifié par '$id_error' ne s'applique pas �  la classe ".get_class($this).".");
 
 		} else {
 
@@ -555,7 +555,7 @@ class Form_Text extends Form_Input {
 	public function __toString() {
 
 		$tab = func_num_args() > 0 ? func_get_arg(0) : '';
-		
+
 		$this->_generate_class();
 
 		$id = '';
@@ -597,7 +597,7 @@ class Form_Hidden extends Form_Input {
 	public function __toString() {
 
 		$tab = func_num_args() > 0 ? func_get_arg(0) : '';
-		
+
 		return $tab.'<input'.$this->attrs.' value="'.htmlspecialchars($this->value).'" />';
 	}
 }
@@ -614,7 +614,7 @@ class Form_Password extends Form_Text {
 	public function __toString() {
 
 		$tab = func_num_args() > 0 ? func_get_arg(0) : '';
-		
+
 		$this->_generate_class();
 
 		$id = '';
@@ -825,7 +825,7 @@ class Form_File extends Form_Input {
 	public function __toString() {
 
 		$tab = func_num_args() > 0 ? func_get_arg(0) : '';
-		
+
 		$this->_generate_class();
 
 		$id = '';
@@ -856,7 +856,7 @@ class Form_Submit extends Form_Input {
 	public function __toString() {
 
 		$tab = func_num_args() > 0 ? func_get_arg(0) : '';
-		
+
 
 		$this->_generate_class();
 
@@ -917,7 +917,7 @@ class Form_Radio extends Form_Input {
 	public function __toString() {
 
 		$tab = func_num_args() > 0 ? func_get_arg(0) : '';
-		
+
 		$this->_generate_class();
 
 		$i = $this->form->auto_id();
@@ -983,8 +983,7 @@ class Form_Select extends Form_Input {
 	public function is_valid($value) {
 
 		if (parent::is_valid($value)) {
-
-			if ($this->required && !in_array($value, $this->choices)) {
+			if ($this->required && !array_key_exists($value, $this->choices)) {
 
 				$this->_error('incorrect_value');
 				return false;
@@ -997,7 +996,7 @@ class Form_Select extends Form_Input {
 	public function __toString() {
 
 		$tab = func_num_args() > 0 ? func_get_arg(0) : '';
-		
+
 		$this->_generate_class();
 
 		$id = '';
@@ -1073,7 +1072,7 @@ class Form_Checkbox extends Form_Input {
 	public function __toString() {
 
 		$tab = func_num_args() > 0 ? func_get_arg(0) : '';
-		
+
 		$this->_generate_class();
 
 		$id = '';
@@ -1119,7 +1118,7 @@ class Form_Textarea extends Form_Field {
 	public function __toString() {
 
 		$tab = func_num_args() > 0 ? func_get_arg(0) : '';
-		
+
 		$this->_generate_class();
 
 		$id = '';
@@ -1183,7 +1182,7 @@ class ErrorList extends ListArray {
 	public function __toString() {
 
 		$tab = func_num_args() > 0 ? func_get_arg(0) : '';
-		
+
 		if (!empty($this->array)) {
 
 			return sprintf($tab."<ul>\n\t$tab<li>%s</li>\n$tab</ul>", implode("</li>\n\t$tab<li>", $this->array));
