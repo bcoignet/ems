@@ -26,3 +26,15 @@ define ('TYPE_MOTO_TRAIL', 'Trail');
 define ('TYPE_MOTO_SPORTIVE', 'Sportive');
 define ('TYPE_MOTO_AUCUNE', '');
 
+define ('TYPE_COURSE_TRIATHLON', 'Triathlon');
+define ('TYPE_COURSE_EN_LIGNE', 'Ligne');
+define ('TYPE_COURSE_CIRCUIT', 'Circuit');
+
+define ('TYPE_STATUT_COURSE_ANNONCE', 'Annoncé');
+define ('TYPE_STATUT_COURSE_NEGOCIATION', 'Négociation');
+define ('TYPE_STATUT_COURSE_SIGNE', 'Signée');
+define ('TYPE_STATUT_COURSE_PERDU', 'Perdue');
+
+define ('TYPE_VISIBILITE_TOUS', 'Tous');
+define ('TYPE_VISIBILITE_ADMIN', 'Admin');
+define ('TYPE_VISIBILITE_NON', 'Non');
