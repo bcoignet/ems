@@ -29,8 +29,9 @@ define ('TYPE_MOTO_AUCUNE', '');
 define ('TYPE_COURSE_TRIATHLON', 'Triathlon');
 define ('TYPE_COURSE_EN_LIGNE', 'Ligne');
 define ('TYPE_COURSE_CIRCUIT', 'Circuit');
+define ('TYPE_COURSE_AUCUN', '');
 
-define ('TYPE_STATUT_COURSE_ANNONCE', 'Annoncé');
+define ('TYPE_STATUT_COURSE_ANNONCE', 'Annoncée');
 define ('TYPE_STATUT_COURSE_NEGOCIATION', 'Négociation');
 define ('TYPE_STATUT_COURSE_SIGNE', 'Signée');
 define ('TYPE_STATUT_COURSE_PERDU', 'Perdue');

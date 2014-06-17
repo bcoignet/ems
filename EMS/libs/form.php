@@ -1069,6 +1069,18 @@ class Form_Checkbox extends Form_Input {
 		return false;
 	}
 
+	public function checked($bool = true) {
+		if (true === $bool) {
+			$this->attrs['checked'] = 'checked';
+			//$this->required = true;
+		}
+		else {
+			unset($this->attrs['checked']);
+			//$this->required = false;
+		}
+		return $this;
+	}
+
 	public function __toString() {
 
 		$tab = func_num_args() > 0 ? func_get_arg(0) : '';

@@ -17,6 +17,7 @@
 	<th> Visibilite </th>
 	<th> date_creation </th>
 	<th> date_maj </th>
+
 </tr>
 <?php
 
@@ -27,6 +28,7 @@ foreach ($courses as $course) {
 		echo '<td>' . ($v) . '</td> ';
 	}
 	echo '<td><a href="' . CHEMIN_BASE . 'index.php?module=courses&action=modifier&id=' . $course->getId() . '">Modifier</a></td>';
+	echo '<td><a href="' . CHEMIN_BASE . 'index.php?module=courses&action=afficher&id=' . $course->getId() . '">Afficher</a></td>';
 	echo '</tr>';
 
 

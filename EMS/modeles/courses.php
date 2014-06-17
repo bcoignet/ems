@@ -22,9 +22,10 @@ class course {
 
 	private static $choixTypeCourse = array(TYPE_COURSE_CIRCUIT => 'Circuit',
 											TYPE_COURSE_EN_LIGNE => 'Ligne',
-											TYPE_COURSE_TRIATHLON => 'Triathlon');
+											TYPE_COURSE_TRIATHLON => 'Triathlon',
+											TYPE_COURSE_AUCUN => '');
 
-	private static $choixStatutCourse = array(	TYPE_STATUT_COURSE_ANNONCE => 'Annoncé',
+	private static $choixStatutCourse = array(	TYPE_STATUT_COURSE_ANNONCE => 'Annoncée',
 												TYPE_STATUT_COURSE_NEGOCIATION => 'Négociation',
 												TYPE_STATUT_COURSE_SIGNE => 'Signée',
 												TYPE_STATUT_COURSE_PERDU => 'Perdue');

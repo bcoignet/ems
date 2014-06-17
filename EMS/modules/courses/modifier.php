@@ -2,6 +2,7 @@
 if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_ADMIN && isset($_GET['id'])) {
 
 	require_once CHEMIN_MODELE.'courses.php';
+	require_once CHEMIN_MODELE.'participations.php';
 	require_once CHEMIN_LIB.'form.php';
 
 	$idCourse = htmlentities($_GET['id']);
@@ -19,6 +20,12 @@ if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_
 		}
 
 	}
+
+	$participation = new participation('0', $idCourse);
+	//$membresParticipant = $participation->getListing();
+	$formMembreParticipant = $participation->formMembreParticipant();
+
+
 
 	require_once CHEMIN_VUE.'modifier.php';
 } else {

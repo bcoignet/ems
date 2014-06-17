@@ -61,3 +61,36 @@ table, tr, td, th
     padding: 5px;
     display: inline-block;
 }
+
+#infosCourse {
+	border: 1px solid black;
+	padding: 15px;
+    /*width: 450px;*/
+    margin: 10px;
+    margin-top: 0;
+    /*float: left;*/
+}
+
+#disponibilitesCourse {
+	border: 1px solid black;
+	padding: 15px;
+    /*width: 450px;*/
+    height:	250px;
+    margin: 10px;
+	/*margin-left: 500px;*/
+	margin-top: 0;
+}
+
+#participationsCourse {
+	/*width: 450px;*/
+	border: 1px solid black;
+	height: 250px;
+	margin: 10px;
+	padding: 15px;
+	/*margin-left: 500px;*/
+	margin-top: 0;
+}
+
+#clear {
+	clear: both;
+}
