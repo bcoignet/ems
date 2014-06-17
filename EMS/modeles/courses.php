@@ -114,7 +114,7 @@ class course {
 		$arrStatutCourse = $this->selectStatutCourse();
 		$arrVisibiliteCourse = $this->selectVisibiliteCourse();
 
-		$form_course = new Form('formulaire_modifier_course');
+		$form_course = new Form('formulaire_course');
 
 		$form_course->method('POST');
 
@@ -168,11 +168,11 @@ class course {
 
 		$form_course->add('Text', 'date_fin')
 		->label("Fin")
-		->value($this->dateDebut);
+		->value($this->dateFin);
 
 		$form_course->add('Text', 'heure_fin')
 		->label("Heure fin")
-		->value($this->heureDebut);
+		->value($this->heureFin);
 
 		$form_course->add('Select', 'statut')
 		->label("Statut")
@@ -227,7 +227,11 @@ class course {
 		$form->get_cleaned_data('nom', 'ville', 'type_course', 'organisation', 'moto_demande', 'distance', 'nb_coureurs', 'defraiement',
 				'date_debut', 'heure_debut', 'date_fin', 'heure_fin', 'statut','visibilite');
 		error_log('BCT : ' . var_export($this, true));
-		$this->save();
+		if ($this->id === '0') {
+			$this->create();
+		}else {
+			$this->save();
+		}
 	}
 
 	/**
@@ -274,7 +278,65 @@ class course {
 			return $pdo->lastInsertId();
 		}
 
-		//$requete->closeCursor();
+		$requete->closeCursor();
+		return $requete->errorInfo();
+
+	}
+
+	private function create() {
+		$pdo = PDO2::getInstance();
+
+		$requete = $pdo->prepare("INSERT INTO courses (	nom,
+														ville,
+														organisation,
+														type_course,
+														date_debut,
+														date_fin,
+														heure_debut,
+														heure_fin,
+														moto_demande,
+														defraiement,
+														distance,
+														nb_coureurs,
+														statut,
+														visibilite)
+												values(
+												        :nom,
+														:ville,
+														:organisation,
+														:type_course,
+														:date_debut,
+														:date_fin,
+														:heure_debut,
+														:heure_fin,
+														:moto_demande,
+														:defraiement,
+														:distance,
+														:nb_coureurs,
+														:statut,
+														:visibilite
+												)");
+		$requete->bindValue(':nom', $this->nom);
+		$requete->bindValue(':ville',    $this->ville);
+		$requete->bindValue(':organisation',    $this->organisation);
+		$requete->bindValue(':type_course',    $this->typeCourse);
+		$requete->bindValue(':date_debut',    $this->dateDebut);
+		$requete->bindValue(':date_fin',    $this->dateFin);
+		$requete->bindValue(':heure_debut',    $this->heureDebut);
+		$requete->bindValue(':heure_fin',    $this->heureFin);
+		$requete->bindValue(':moto_demande',    $this->motoDemande);
+		$requete->bindValue(':defraiement',    $this->defraiement);
+		$requete->bindValue(':distance',    $this->distance);
+		$requete->bindValue(':nb_coureurs',    $this->nbCoureurs);
+		$requete->bindValue(':statut',    $this->statut);
+		$requete->bindValue(':visibilite',    $this->visibilite);
+
+		if ($requete->execute()) {
+			$this->id = $pdo->lastInsertId();
+			return $pdo->lastInsertId();
+		}
+
+		$requete->closeCursor();
 		return $requete->errorInfo();
 
 	}

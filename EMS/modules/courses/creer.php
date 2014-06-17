@@ -1,13 +1,12 @@
 <?php
-if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_ADMIN && isset($_GET['id'])) {
+
+if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_ADMIN ) {
 
 	require_once CHEMIN_MODELE.'courses.php';
 	require_once CHEMIN_LIB.'form.php';
 
-	$idCourse = htmlentities($_GET['id']);
-
-	$course = new course($idCourse);
-	$course->load();
+	$course = new course('0');
+	//$course->load();
 
 	$formCourse =  $course->formulaireEdition();
 
