@@ -35,43 +35,64 @@ class participation {
 		$form_membre_participant = new Form('formulaire_membre_participant');
 		$form_membre_participant->method('POST');
 
+		$i = 0;
 		foreach ($this->listing as $listing) {
 			$membre = $listing['membre'];
 			$participe = $listing['participe'];
 
 			if ($participe === '1') {
-			$form_membre_participant->add('Checkbox', 'membre_' . $membre->getId())
-			->label($membre->getNom() . ' ' . $membre->getPrenom())
-			->value($membre->getId())
-			->checked();
-			} else {
-				$form_membre_participant->add('Checkbox', 'membre_' . $membre->getId())
+				$form_membre_participant->add('Checkbox', 'membre_' . $i)
 				->label($membre->getNom() . ' ' . $membre->getPrenom())
-				->value($membre->getId());
+				->value($membre->getId())
+				->required(false)
+				->checked();
+			} else {
+				$form_membre_participant->add('Checkbox', 'membre_' . $i)
+				->label($membre->getNom() . ' ' . $membre->getPrenom())
+				->value($membre->getId())
+				->required(false);
 			}
+			$i++;
 		}
+		$form_membre_participant->add('Submit', 'submit')
+		->value("Enregistrer");
 
 		return $form_membre_participant;
+	}
+
+	public function update($form) {
+
+		foreach ($_POST as $k => $champ) {
+
+			if (preg_match('/membre_[0-9]+/', $k)) {
+				echo  $champ; //id des membre qui participe
+			}
+
+		}
+
+		/*
+		list(	$this->nom, $this->ville, $this->typeCourse, $this->organisation, $this->motoDemande, $this->distance, $this->nbCoureurs, $this->defraiement,
+				$this->dateDebut, $this->heureDebut, $this->dateFin, $this->heureFin, $this->statut, $this->visibilite) =
+				$form->get_cleaned_data('nom', 'ville', 'type_course', 'organisation', 'moto_demande', 'distance', 'nb_coureurs', 'defraiement',
+						'date_debut', 'heure_debut', 'date_fin', 'heure_fin', 'statut','visibilite');
+		error_log('BCT : ' . var_export($this, true));
+		//*/
 	}
 
 	public function listingMembre () {
 		$pdo = PDO2::getInstance();
 		$membres = array();
 
-		/*$requete = $pdo->prepare("	SELECT id_membre, date_creation
-									FROM participations_courses pc
-									WHERE pc.id_course = :id_course");//*/
-
-		$requete = $pdo->prepare("	SELECT pc.id_membre, true as 'participe'
+		$requete = $pdo->prepare("	SELECT pc.id_membre, true AS 'participe'
 									FROM participations_courses pc
 									WHERE pc.id_course = :id_course
 									UNION (
-										select m.id, false as 'participe'
-										from membres m
-										where m.id not in (
-											select pc.id_membre
-											from participations_courses pc
-											where pc.id_course = :id_course)
+										SELECT m.id, false AS 'participe'
+										FROM membres m
+										WHERE m.id NOT IN (
+											SELECT pc.id_membre
+											FROM participations_courses pc
+											WHERE pc.id_course = :id_course)
 									)
 								");
 
@@ -84,7 +105,6 @@ class participation {
 			$membres[$result['id_membre']]['membre'] = $membre;
 			$membres[$result['id_membre']]['participe'] = $result['participe'];
 		}
-		error_log('BCT : $membres ' . var_export($membres, true));
 		$this->listing = $membres;
 
 	}
@@ -93,18 +113,28 @@ class participation {
 		$pdo = PDO2::getInstance();
 		$courses = array();
 
-		$requete = $pdo->prepare("	SELECT id_course, date_creation
+		$requete = $pdo->prepare("	SELECT pc.id_course, true AS 'participe'
 									FROM participations_courses pc
-									WHERE pc.id_membre = :id_membre");
+									WHERE pc.id_membre = :id_membre
+									UNION
+									(
+										SELECT c.id, false AS 'participe'
+										FROM courses c
+										WHERE c.id NOT IN (
+											SELECT pc.id_course
+											FROM participations_courses pc
+											WHERE pc.id_membre = :id_membre)
+
+									)");
 		$requete->bindValue(':id_membre', $this->idMembre);
 		$requete->execute();
 
 		while ($result = $requete->fetch(PDO::FETCH_ASSOC)) {
 			$course = new course($result['id_course']);
 			$course->load();
-			$courses[$result['id_course']] = $course;
+			$courses[$result['id_course']]['course'] = $course;
+			$courses[$result['id_course']]['participe'] = $result['participe'];
 		}
-		error_log('BCT : $courses' . var_export($courses, true));
 		$this->listing =  $courses;
 	}
 

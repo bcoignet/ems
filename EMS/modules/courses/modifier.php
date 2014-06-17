@@ -22,8 +22,17 @@ if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_
 	}
 
 	$participation = new participation('0', $idCourse);
-	//$membresParticipant = $participation->getListing();
 	$formMembreParticipant = $participation->formMembreParticipant();
+
+	if (isset($_POST['uniqid']) && $_POST['uniqid'] === 'formulaire_membre_participant') {
+		if ($formMembreParticipant->is_valid($_POST)) {
+			$participation->update($formMembreParticipant);
+			error_log('BCT : ' . var_export($_POST, true));
+			//$message = 'Modification de la course ' . $course->getNom() . ' enregistré.';
+			//header('location: ' . CHEMIN_BASE . 'index.php?module=courses&action=listing&message=' . $message); //TODO ameliorer
+		}
+
+	}
 
 
 

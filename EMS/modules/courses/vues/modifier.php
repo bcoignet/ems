@@ -15,13 +15,7 @@ require_once CHEMIN_MODELE.'membres.php';
 	Sont prévu sur cette course:
 
 	<?php
-	//var_dump($formMembreParticipant);
 	echo $formMembreParticipant;
-
-	/*
-		foreach($membresParticipant as $id => $membre) {
-			echo '<li>' . $membre->getNom() . ' ' . $membre->getPrenom() . '</li>';
-		}//*/
 	?>
 
 	</div>
