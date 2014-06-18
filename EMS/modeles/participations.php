@@ -60,23 +60,18 @@ class participation {
 		return $form_membre_participant;
 	}
 
-	public function update($form) {
+	public function update() {
+		$i = 0;
+		foreach ($this->listing as $k => $data) {
 
-		foreach ($_POST as $k => $champ) {
-
-			if (preg_match('/membre_[0-9]+/', $k)) {
-				echo  $champ; //id des membre qui participe
+			if (array_key_exists('membre_' . $i, $_POST)) {
+				$this->listing[$_POST['membre_' . $i]]['participe'] = '1';
+			}else {
+				$this->listing[$k]['participe'] = '0';
 			}
-
+			$i++;
 		}
-
-		/*
-		list(	$this->nom, $this->ville, $this->typeCourse, $this->organisation, $this->motoDemande, $this->distance, $this->nbCoureurs, $this->defraiement,
-				$this->dateDebut, $this->heureDebut, $this->dateFin, $this->heureFin, $this->statut, $this->visibilite) =
-				$form->get_cleaned_data('nom', 'ville', 'type_course', 'organisation', 'moto_demande', 'distance', 'nb_coureurs', 'defraiement',
-						'date_debut', 'heure_debut', 'date_fin', 'heure_fin', 'statut','visibilite');
-		error_log('BCT : ' . var_export($this, true));
-		//*/
+		$this->save();
 	}
 
 	public function listingMembre () {
@@ -86,6 +81,7 @@ class participation {
 		$requete = $pdo->prepare("	SELECT pc.id_membre, true AS 'participe'
 									FROM participations_courses pc
 									WHERE pc.id_course = :id_course
+
 									UNION (
 										SELECT m.id, false AS 'participe'
 										FROM membres m
@@ -94,6 +90,7 @@ class participation {
 											FROM participations_courses pc
 											WHERE pc.id_course = :id_course)
 									)
+									order by id_membre
 								");
 
 		$requete->bindValue(':id_course', $this->idCourse);
@@ -124,8 +121,9 @@ class participation {
 											SELECT pc.id_course
 											FROM participations_courses pc
 											WHERE pc.id_membre = :id_membre)
-
-									)");
+									)
+									order by id_course
+				");
 		$requete->bindValue(':id_membre', $this->idMembre);
 		$requete->execute();
 
@@ -136,6 +134,40 @@ class participation {
 			$courses[$result['id_course']]['participe'] = $result['participe'];
 		}
 		$this->listing =  $courses;
+	}
+
+	private function save() {
+		if ($this->cleanParticipation()) {
+			$pdo = PDO2::getInstance();
+			$result = array();
+			foreach ($this->listing as $idMembre => $value) {
+				if ($value['participe'] === '1') {
+					$requete = $pdo->prepare("INSERT INTO participations_courses (id_membre, id_course) values(:id_membre,:id_course)");
+					$requete->bindValue('id_membre', $idMembre);
+					$requete->bindValue('id_course', $this->idCourse);
+					if ($requete->execute()) {
+						$result['inserted'][] = $pdo->lastInsertId();
+					}else {
+						$result['error'][] = $requete->errorInfo();
+					}
+					$requete->closeCursor();
+				}
+			}
+
+		}
+		return $result;
+	}
+
+	private function cleanParticipation() {
+		$pdo = PDO2::getInstance();
+		$requete = $pdo->prepare("DELETE FROM participations_courses
+		where id_course = :id_course");
+		//AND id_membre IN (:id_membre)");
+		$requete->bindValue(':id_course', $this->idCourse);
+
+		//$requete->bindValue(':id_membre', $idMembreList);
+
+		return $requete->execute();
 	}
 
 }

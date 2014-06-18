@@ -16,23 +16,24 @@ if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_
 		if ($formCourse->is_valid($_POST)) {
 			$course->update($formCourse);
 			$message = 'Modification de la course ' . $course->getNom() . ' enregistré.';
-			header('location: ' . CHEMIN_BASE . 'index.php?module=courses&action=listing&message=' . $message); //TODO ameliorer
+			header('location: ' . CHEMIN_BASE . 'index.php?module=courses&action=modifier&id=' . $course->getId() . '&message=' . $message); //TODO ameliorer
 		}
 
 	}
 
 	$participation = new participation('0', $idCourse);
 	$formMembreParticipant = $participation->formMembreParticipant();
+	//$formMembreParticipant->bound($_POST);
 
 	if (isset($_POST['uniqid']) && $_POST['uniqid'] === 'formulaire_membre_participant') {
 		if ($formMembreParticipant->is_valid($_POST)) {
-			$participation->update($formMembreParticipant);
-			error_log('BCT : ' . var_export($_POST, true));
-			//$message = 'Modification de la course ' . $course->getNom() . ' enregistré.';
-			//header('location: ' . CHEMIN_BASE . 'index.php?module=courses&action=listing&message=' . $message); //TODO ameliorer
+			$participation->update();
+			$message = 'Modification de la course ' . $course->getNom() . ' enregistré.';
+			header('location: ' . CHEMIN_BASE . 'index.php?module=courses&action=modifier&id=' . $course->getId() . '&message=' . $message); //TODO ameliorer
 		}
 
 	}
+
 
 
 
