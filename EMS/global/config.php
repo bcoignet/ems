@@ -39,3 +39,8 @@ define ('TYPE_STATUT_COURSE_PERDU', 'Perdue');
 define ('TYPE_VISIBILITE_TOUS', 'Tous');
 define ('TYPE_VISIBILITE_ADMIN', 'Admin');
 define ('TYPE_VISIBILITE_NON', 'Non');
+
+define ('MEMBRE_PARTICIPE_OUI',  'Oui');
+define ('MEMBRE_PARTICIPE_NON',  'Non');
+define ('MEMBRE_PARTICIPE_PEUT_ETRE',  'Peut être');
+define ('MEMBRE_PARTICIPE_AUCUN',  '');

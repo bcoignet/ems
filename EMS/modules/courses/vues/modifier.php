@@ -10,17 +10,21 @@ require_once CHEMIN_MODELE.'membres.php';
 	?>
 	</div>
 
-	<div id="disponibilitesCourse">
+	<div id="participationsCourse">
 
 	Sont prévu sur cette course:
 
 	<?php
-	echo $formMembreParticipant;
+		echo $formMembreParticipant;
 	?>
 
 	</div>
 
-	<div id="participationsCourse">
+	<div id="disponibilitesCourse">
+	Sont disponible pour cette course:
+	<?php
+		echo $formMembreDisponible;
+	?>
 	</div>
 
 

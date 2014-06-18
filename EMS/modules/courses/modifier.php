@@ -3,6 +3,7 @@ if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_
 
 	require_once CHEMIN_MODELE.'courses.php';
 	require_once CHEMIN_MODELE.'participations.php';
+	require_once CHEMIN_MODELE.'disponibilites.php';
 	require_once CHEMIN_LIB.'form.php';
 
 	$idCourse = htmlentities($_GET['id']);
@@ -28,11 +29,24 @@ if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_
 	if (isset($_POST['uniqid']) && $_POST['uniqid'] === 'formulaire_membre_participant') {
 		if ($formMembreParticipant->is_valid($_POST)) {
 			$participation->update();
-			$message = 'Modification de la course ' . $course->getNom() . ' enregistré.';
+			$message = 'Mise à jour des participants de la course ' . $course->getNom() . ' enregistré.';
 			header('location: ' . CHEMIN_BASE . 'index.php?module=courses&action=modifier&id=' . $course->getId() . '&message=' . $message); //TODO ameliorer
 		}
 
 	}
+
+	$disponibilite = new disponibilite('0', $idCourse);
+	$formMembreDisponible = $disponibilite->formMembreDisponible();
+
+	if (isset($_POST['uniqid']) && $_POST['uniqid'] === 'formulaire_membre_disponible') {
+		if ($formMembreDisponible->is_valid($_POST)) {
+			$disponibilite->update();
+			$message = 'Mise a jour des disponibilités pour la course ' . $course->getNom() . ' enregistré.';
+			header('location: ' . CHEMIN_BASE . 'index.php?module=courses&action=modifier&id=' . $course->getId() . '&message=' . $message); //TODO ameliorer
+		}
+
+	}
+
 
 
 
