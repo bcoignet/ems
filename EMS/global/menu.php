@@ -15,6 +15,7 @@
 					case '1':
 						echo '<ul>Admin';
 						echo '<li><a href="' . CHEMIN_BASE . 'index.php?module=membres&action=listing">Liste des membres </a></li>';
+						echo '<li><a href="' . CHEMIN_BASE . 'index.php?module=membres&action=creer">Créer un membre </a></li>';
 						echo '<li><a href="' . CHEMIN_BASE . 'index.php?module=courses&action=listing">Liste des courses </a></li>';
 						echo '<li><a href="' . CHEMIN_BASE . 'index.php?module=courses&action=creer">Créer une course </a></li>';
 						echo '<li><a href="' . CHEMIN_BASE . 'index.php?module=utilisateurs&action=listing">Liste des utilisateurs </a></li>';

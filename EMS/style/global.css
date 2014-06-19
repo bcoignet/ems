@@ -22,14 +22,20 @@ h2, h3, h4, h5, h6
 #menu
 {
 	float: left;
-	width: 13%;
-	margin: 0em 1em 1em;
+	width: 150px;
+	margin: 0em 0em 1em;
 	padding: 1em;
 /* 	background-color: #22ff37; */
 }
+
+#menu > ul {
+    margin-left: 0;
+    padding-left: 16px;
+}
+
 #centre
 {
-	margin: 1em 1em 1em 17%;
+	margin: 1em 1em 1em 175px;
 	padding: 1em;
 	background-color: #eeeeee;
 }
