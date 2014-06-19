@@ -342,4 +342,19 @@ class course {
 
 	}
 
+	public function delete() {
+		error_log('BCT : ' . var_export($this, true));
+		$pdo = PDO2::getInstance();
+		$requete = $pdo->prepare("DELETE FROM courses
+		where id = :id_course");
+		$requete->bindValue(':id_course', $this->id);
+
+
+		if ($requete->execute()) {
+			return true;
+		}else {
+			error_log('BCT : ' . var_export($requete->errorInfo(), true));
+			return $requete->errorInfo();
+		}
+	}
 }

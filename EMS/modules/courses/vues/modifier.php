@@ -3,8 +3,18 @@
 require_once CHEMIN_MODELE.'membres.php';
 ?>
 <div>
+	<div>
+		<?php
 
-<div id="infosCourse">
+		if ($participation->getNbParticipant() <= 0) {
+			echo '<a href="' . CHEMIN_BASE . 'index.php?module=courses&action=supprimer&id=' . $course->getId() . '"><button>Supprimer</button></a>';
+		}else {
+			echo '<a href="' . CHEMIN_BASE . 'index.php?module=courses&action=supprimer&id=' . $course->getId() . ' "><button disabled="disabled" title="Pour supprimer cette course, il faut supprimer les participants">Supprimer</button></a>';
+		}
+		?>
+	</div>
+
+	<div id="infosCourse">
 	<?php
 		echo $formCourse;
 	?>

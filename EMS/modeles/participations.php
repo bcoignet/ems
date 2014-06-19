@@ -170,4 +170,14 @@ class participation {
 		return $requete->execute();
 	}
 
+	public function getNbParticipant() {
+		$i = 0;
+		foreach ($this->listing as $k => $value) {
+			if ($value['participe'] === '1') {
+				$i++;
+			}
+		}
+		return $i;
+	}
+
 }

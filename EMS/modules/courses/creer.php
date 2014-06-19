@@ -8,6 +8,7 @@ if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_
 	$course = new course('0'); // course vide
 
 	$formCourse =  $course->formulaireEdition();
+	$formCourse->bound($_POST);
 
 	if (isset($_POST['uniqid']) && $_POST['uniqid'] === 'formulaire_course') {
 		if ($formCourse->is_valid($_POST)) {
@@ -18,7 +19,7 @@ if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_
 
 	}
 
-	require_once CHEMIN_VUE.'modifier.php';
+	require_once CHEMIN_VUE.'creer.php';
 } else {
 	header('Location: ' . CHEMIN_BASE . 'index.php');
 }
