@@ -32,7 +32,7 @@ class participation {
 	}
 
 	public function formMembreParticipant() {
-		$form_membre_participant = new Form('formulaire_membre_participant');
+		$form_membre_participant = new Form('formulaire_participation_course');
 		$form_membre_participant->method('POST');
 
 		$i = 0;
@@ -60,17 +60,60 @@ class participation {
 		return $form_membre_participant;
 	}
 
-	public function update() {
-		$i = 0;
-		foreach ($this->listing as $k => $data) {
+	public function formParticipationCourse() {
+		$form_participant_course = new Form('formulaire_participation_course');
+		$form_participant_course->method('POST');
 
-			if (array_key_exists('membre_' . $i, $_POST)) {
-				$this->listing[$_POST['membre_' . $i]]['participe'] = '1';
-			}else {
-				$this->listing[$k]['participe'] = '0';
+		$i = 0;
+		foreach ($this->listing as $listing) {
+			$course = $listing['course'];
+			$participe = $listing['participe'];
+
+			if ($participe === '1') {
+				$form_participant_course->add('Checkbox', 'course_' . $i)
+				->label($course->getNom())
+				->value($course->getId())
+				->required(false)
+				->checked();
+			} else {
+				$form_participant_course->add('Checkbox', 'course_' . $i)
+				->label($course->getNom())
+				->value($course->getId())
+				->required(false);
 			}
 			$i++;
 		}
+		$form_participant_course->add('Submit', 'submit')
+		->value("Enregistrer");
+
+		return $form_participant_course;
+	}
+
+	public function update() {
+		if ($this->idMembre === '0' && $this->idCourse !== '0') {
+			$i = 0;
+			foreach ($this->listing as $k => $data) {
+
+				if (array_key_exists('membre_' . $i, $_POST)) {
+					$this->listing[$_POST['membre_' . $i]]['participe'] = '1';
+				}else {
+					$this->listing[$k]['participe'] = '0';
+				}
+				$i++;
+			}
+		}elseif ($this->idMembre !== '0' && $this->idCourse === '0') {
+			$i = 0;
+			foreach ($this->listing as $k => $data) {
+
+				if (array_key_exists('course_' . $i, $_POST)) {
+					$this->listing[$_POST['course_' . $i]]['participe'] = '1';
+				}else {
+					$this->listing[$k]['participe'] = '0';
+				}
+				$i++;
+			}
+		}
+		error_log('BCT : erreur participation' . var_export($this->listing, true));
 		$this->save();
 	}
 
@@ -137,28 +180,48 @@ class participation {
 	}
 
 	private function save() {
-		if ($this->cleanParticipation()) {
-			$pdo = PDO2::getInstance();
-			$result = array();
-			foreach ($this->listing as $idMembre => $value) {
-				if ($value['participe'] === '1') {
-					$requete = $pdo->prepare("INSERT INTO participations_courses (id_membre, id_course) values(:id_membre,:id_course)");
-					$requete->bindValue('id_membre', $idMembre);
-					$requete->bindValue('id_course', $this->idCourse);
-					if ($requete->execute()) {
-						$result['inserted'][] = $pdo->lastInsertId();
-					}else {
-						$result['error'][] = $requete->errorInfo();
+
+		if ($this->idMembre === '0' && $this->idCourse !== '0') {
+			if ($this->cleanParticipationCourse()) {
+				$pdo = PDO2::getInstance();
+				$result = array();
+				foreach ($this->listing as $idMembre => $value) {
+					if ($value['participe'] === '1') {
+						$requete = $pdo->prepare("INSERT INTO participations_courses (id_membre, id_course) values(:id_membre,:id_course)");
+						$requete->bindValue('id_membre', $idMembre);
+						$requete->bindValue('id_course', $this->idCourse);
+						if ($requete->execute()) {
+							$result['inserted'][] = $pdo->lastInsertId();
+						}else {
+							$result['error'][] = $requete->errorInfo();
+						}
+						$requete->closeCursor();
 					}
-					$requete->closeCursor();
 				}
 			}
-
+		}elseif ($this->idMembre !== '0' && $this->idCourse === '0') {
+			if ($this->cleanParticipationMembre()) {
+				$pdo = PDO2::getInstance();
+				$result = array();
+				foreach ($this->listing as $idCourse => $value) {
+					if ($value['participe'] === '1') {
+						$requete = $pdo->prepare("INSERT INTO participations_courses (id_membre, id_course) values(:id_membre,:id_course)");
+						$requete->bindValue('id_membre', $this->idMembre);
+						$requete->bindValue('id_course', $idCourse);
+						if ($requete->execute()) {
+							$result['inserted'][] = $pdo->lastInsertId();
+						}else {
+							$result['error'][] = $requete->errorInfo();
+						}
+						$requete->closeCursor();
+					}
+				}
+			}
 		}
 		return $result;
 	}
 
-	private function cleanParticipation() {
+	private function cleanParticipationCourse() {
 		$pdo = PDO2::getInstance();
 		$requete = $pdo->prepare("DELETE FROM participations_courses
 		where id_course = :id_course");
@@ -167,6 +230,14 @@ class participation {
 
 		//$requete->bindValue(':id_membre', $idMembreList);
 
+		return $requete->execute();
+	}
+
+	private function cleanParticipationMembre() {
+		$pdo = PDO2::getInstance();
+		$requete = $pdo->prepare("DELETE FROM participations_courses
+		where id_membre = :id_membre");
+		$requete->bindValue(':id_membre', $this->idMembre);
 		return $requete->execute();
 	}
 

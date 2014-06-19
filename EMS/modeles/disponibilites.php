@@ -56,18 +56,46 @@ class disponibilite {
 		return $form_membre_disponible;
 	}
 
+	public function formDisponibiliteCourse() {
+		$form_disponibilite_course = new Form('formulaire_disponibilite_course');
+		$form_disponibilite_course->method('POST');
+
+		foreach ($this->listing as $listing) {
+			$course = $listing['course'];
+			$choixReponse = $this->selectReponse();
+			$form_disponibilite_course->add('SELECT', 'course_' . $course->getId())
+			->label($course->getNom())
+			->value($listing['reponse'])
+			->choices($choixReponse['choix'])
+			->required(false);
+		}
+		$form_disponibilite_course->add('Submit', 'submit')
+		->value("Enregistrer");
+
+		return $form_disponibilite_course;
+	}
+
 	public function selectReponse() {
 		return array('choix' => disponibilite::$choixDisponibilite);
 	}
 
 	public function update() {
-		//error_log('BCT : ' . var_export($this->listing, true));
-		foreach ($this->listing as $k => $data) {
-			if (array_key_exists('membre_' . $k, $_POST)) {
-				$this->listing[$k]['reponse'] = $_POST['membre_' . $k];
+		if ($this->idMembre === '0' && $this->idCourse !== '0') {
+			foreach ($this->listing as $k => $data) {
+				if (array_key_exists('membre_' . $k, $_POST)) {
+					$this->listing[$k]['reponse'] = $_POST['membre_' . $k];
+				}
+			}
+		}elseif ($this->idMembre !== '0' && $this->idCourse === '0') {
+			foreach ($this->listing as $k => $data) {
+				if (array_key_exists('course_' . $k, $_POST)) {
+					$this->listing[$k]['reponse'] = $_POST['course_' . $k];
+				}
 			}
 		}
-		//error_log('BCT : ' . var_export($this->listing, true));
+
+		error_log('BCT : ' . var_export($this->listing, true));
+
 		$this->save();
 	}
 
@@ -127,45 +155,73 @@ class disponibilite {
 	}
 
 	private function save() {
-		if ($this->cleanDisponibilite()) {
-			$pdo = PDO2::getInstance();
-			$result = array();
-			foreach ($this->listing as $idMembre => $value) {
-				if ($value['reponse'] !== '') {
-					$requete = $pdo->prepare("INSERT INTO disponibilites_courses (id_membre, id_course, reponse) values(:id_membre,:id_course,:reponse)");
-					$requete->bindValue('id_membre', $idMembre);
-					$requete->bindValue('id_course', $this->idCourse);
-					$requete->bindValue('reponse', $value['reponse']);
-					if ($requete->execute()) {
-						$result['inserted'][] = $pdo->lastInsertId();
-					}else {
-						$result['error'][] = $requete->errorInfo();
+		if ($this->idMembre === '0' && $this->idCourse !== '0') {
+			if ($this->cleanDisponibiliteCourse()) {
+				$pdo = PDO2::getInstance();
+				$result = array();
+				foreach ($this->listing as $idMembre => $value) {
+					if ($value['reponse'] !== '') {
+						$requete = $pdo->prepare("INSERT INTO disponibilites_courses (id_membre, id_course, reponse) values(:id_membre,:id_course,:reponse)");
+						$requete->bindValue('id_membre', $idMembre);
+						$requete->bindValue('id_course', $this->idCourse);
+						$requete->bindValue('reponse', $value['reponse']);
+						if ($requete->execute()) {
+							$result['inserted'][] = $pdo->lastInsertId();
+						}else {
+							$result['error'][] = $requete->errorInfo();
+						}
+						$requete->closeCursor();
 					}
-					$requete->closeCursor();
 				}
-			}
 
+			}
+		}elseif ($this->idMembre !== '0' && $this->idCourse === '0') {
+			if ($this->cleanDisponibiliteMembre()) {
+				$pdo = PDO2::getInstance();
+				$result = array();
+				foreach ($this->listing as $idCourse => $value) {
+					if ($value['reponse'] !== '') {
+						$requete = $pdo->prepare("INSERT INTO disponibilites_courses (id_membre, id_course, reponse) values(:id_membre,:id_course,:reponse)");
+						$requete->bindValue('id_membre', $this->idMembre);
+						$requete->bindValue('id_course', $idCourse);
+						$requete->bindValue('reponse', $value['reponse']);
+						if ($requete->execute()) {
+							$result['inserted'][] = $pdo->lastInsertId();
+						}else {
+							$result['error'][] = $requete->errorInfo();
+						}
+						$requete->closeCursor();
+					}
+				}
+
+			}
 		}
+
 		return $result;
 	}
 
-	private function cleanParticipation() {
+	private function cleanParticipation2() {
 		$pdo = PDO2::getInstance();
 		$requete = $pdo->prepare("DELETE FROM participations_courses
 		where id_course = :id_course");
-		//AND id_membre IN (:id_membre)");
 		$requete->bindValue(':id_course', $this->idCourse);
-
-		//$requete->bindValue(':id_membre', $idMembreList);
 
 		return $requete->execute();
 	}
 
-	private function cleanDisponibilite() {
+	private function cleanDisponibiliteCourse() {
 		$pdo = PDO2::getInstance();
 		$requete = $pdo->prepare("DELETE FROM disponibilites_courses
 		where id_course = :id_course");
 		$requete->bindValue(':id_course', $this->idCourse);
+		return $requete->execute();
+	}
+
+	private function cleanDisponibiliteMembre() {
+		$pdo = PDO2::getInstance();
+		$requete = $pdo->prepare("DELETE FROM disponibilites_courses
+		where id_membre = :id_membre");
+		$requete->bindValue(':id_membre', $this->idMembre);
 		return $requete->execute();
 	}
 

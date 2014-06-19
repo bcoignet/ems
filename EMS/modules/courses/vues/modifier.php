@@ -1,5 +1,4 @@
 <?php
-//require_once CHEMIN_MODELE.'courses.php';
 require_once CHEMIN_MODELE.'membres.php';
 ?>
 <div>

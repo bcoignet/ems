@@ -343,7 +343,6 @@ class course {
 	}
 
 	public function delete() {
-		error_log('BCT : ' . var_export($this, true));
 		$pdo = PDO2::getInstance();
 		$requete = $pdo->prepare("DELETE FROM courses
 		where id = :id_course");
