@@ -94,3 +94,7 @@ table, tr, td, th
 #clear {
 	clear: both;
 }
+
+.miniInfos {
+	font-size: 65%;
+}

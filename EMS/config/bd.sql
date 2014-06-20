@@ -11,6 +11,7 @@ CREATE TABLE membres (
 	photo				VARCHAR(128)		NOT NULL,
 	sexe				char(1)				NOT NULL,
 	type_membre			VARCHAR(50)			NOT NULL,
+	inactif				tinyint(1)			NOT NULL DEFAULT '0',
 	
 	date_creation		TIMESTAMP			NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	date_maj			TIMESTAMP 			NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -51,7 +52,7 @@ CREATE TABLE utilisateurs (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
--- Courses, participations et disponibilités
+-- Courses, participations et disponibilitï¿½s
 
 CREATE TABLE courses (
 	id					int(10) unsigned 	NOT NULL 	AUTO_INCREMENT,
@@ -105,7 +106,7 @@ CREATE TABLE participations_courses (
 
 
  
---  Sorties, participations et disponibilités
+--  Sorties, participations et disponibilitï¿½s
 
 CREATE TABLE sorties (
 	id					int(10) unsigned 	NOT NULL 	AUTO_INCREMENT,

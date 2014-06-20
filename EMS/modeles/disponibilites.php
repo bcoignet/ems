@@ -63,8 +63,17 @@ class disponibilite {
 		foreach ($this->listing as $listing) {
 			$course = $listing['course'];
 			$choixReponse = $this->selectReponse();
+
+			if ($listing['date_maj'] !== '0000-00-00 00:00:00') {
+				$date = '(' . $listing['date_maj'] . ')';
+			}elseif ($listing['date_creation'] !== '0000-00-00 00:00:00') {
+				$date = '(' . $listing['date_creation']. ')';
+			}else {
+				$date = '';
+			}
+
 			$form_disponibilite_course->add('SELECT', 'course_' . $course->getId())
-			->label($course->getNom())
+			->label($course->getNom() . ' <span class="miniInfos">' . $date . '</span>')
 			->value($listing['reponse'])
 			->choices($choixReponse['choix'])
 			->required(false);
@@ -94,8 +103,6 @@ class disponibilite {
 			}
 		}
 
-		error_log('BCT : ' . var_export($this->listing, true));
-
 		$this->save();
 	}
 
@@ -103,7 +110,8 @@ class disponibilite {
 		$pdo = PDO2::getInstance();
 		$membres = array();
 
-		$requete = $pdo->prepare("	SELECT id_membre, reponse, date_maj, date_creation from disponibilites_courses WHERE id_course = :id_course
+		$requete = $pdo->prepare("	SELECT id_membre, reponse, date_maj, date_creation
+									FROM disponibilites_courses WHERE id_course = :id_course
 									union
 									(
 										SELECT id, '' as reponse, '0000-00-00 00:00:00', '0000-00-00 00:00:00'
@@ -122,6 +130,8 @@ class disponibilite {
 			$membre->load();
 			$membres[$result['id_membre']]['membre'] = $membre;
 			$membres[$result['id_membre']]['reponse'] = $result['reponse'];
+			$membres[$result['id_membre']]['date_creation'] = $result['date_creation'];
+			$membres[$result['id_membre']]['date_maj'] = $result['date_maj'];
 		}
 		error_log('BCT : ' . var_export($membres, true));
 		$this->listing = $membres;
@@ -132,7 +142,8 @@ class disponibilite {
 		$pdo = PDO2::getInstance();
 		$courses = array();
 
-		$requete = $pdo->prepare("	SELECT id_course, reponse, date_maj, date_creation FROM disponibilites_courses WHERE id_membre = :id_membre
+		$requete = $pdo->prepare("	SELECT id_course, reponse, date_maj, date_creation
+									FROM disponibilites_courses WHERE id_membre = :id_membre
 									UNION
 									(
 									SELECT id, '', '0000-00-00 00:00:00', '0000-00-00 00:00:00'
@@ -150,6 +161,8 @@ class disponibilite {
 			$course->load();
 			$courses[$result['id_course']]['course'] = $course;
 			$courses[$result['id_course']]['reponse'] = $result['reponse'];
+			$courses[$result['id_course']]['date_creation'] = $result['date_creation'];
+			$courses[$result['id_course']]['date_maj'] = $result['date_maj'];
 		}
 		$this->listing =  $courses;
 	}
@@ -200,14 +213,6 @@ class disponibilite {
 		return $result;
 	}
 
-	private function cleanParticipation2() {
-		$pdo = PDO2::getInstance();
-		$requete = $pdo->prepare("DELETE FROM participations_courses
-		where id_course = :id_course");
-		$requete->bindValue(':id_course', $this->idCourse);
-
-		return $requete->execute();
-	}
 
 	private function cleanDisponibiliteCourse() {
 		$pdo = PDO2::getInstance();

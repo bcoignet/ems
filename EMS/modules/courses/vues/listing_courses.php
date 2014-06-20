@@ -10,9 +10,7 @@
 	<th> Coureurs </th>
 	<th> € </th>
 	<th> Debut </th>
-	<th> h </th>
 	<th> Fin </th>
-	<th> h </th>
 	<th> Statut </th>
 	<th> Visibilite </th>
 	<th> date_creation </th>
@@ -28,7 +26,6 @@ foreach ($courses as $course) {
 		echo '<td>' . ($v) . '</td> ';
 	}
 	echo '<td><a href="' . CHEMIN_BASE . 'index.php?module=courses&action=modifier&id=' . $course->getId() . '">Modifier</a></td>';
-	echo '<td><a href="' . CHEMIN_BASE . 'index.php?module=courses&action=afficher&id=' . $course->getId() . '">Afficher</a></td>';
 	echo '</tr>';
 
 

@@ -39,10 +39,11 @@ class participation {
 		foreach ($this->listing as $listing) {
 			$membre = $listing['membre'];
 			$participe = $listing['participe'];
+			$date = $listing['date']; // TODO formatage de date
 
 			if ($participe === '1') {
 				$form_membre_participant->add('Checkbox', 'membre_' . $i)
-				->label($membre->getNom() . ' ' . $membre->getPrenom())
+				->label($membre->getNom() . ' ' . $membre->getPrenom() . ' <span class="miniInfos">(' . $date . ')</span>')
 				->value($membre->getId())
 				->required(false)
 				->checked();
@@ -68,10 +69,11 @@ class participation {
 		foreach ($this->listing as $listing) {
 			$course = $listing['course'];
 			$participe = $listing['participe'];
+			$date = $listing['date']; // TODO formatage de date
 
 			if ($participe === '1') {
 				$form_participant_course->add('Checkbox', 'course_' . $i)
-				->label($course->getNom())
+				->label($course->getNom() . ' <span class="miniInfos">(' . $date . ')</span>')
 				->value($course->getId())
 				->required(false)
 				->checked();
@@ -121,12 +123,12 @@ class participation {
 		$pdo = PDO2::getInstance();
 		$membres = array();
 
-		$requete = $pdo->prepare("	SELECT pc.id_membre, true AS 'participe'
+		$requete = $pdo->prepare("	SELECT pc.id_membre, true AS 'participe', date_creation
 									FROM participations_courses pc
 									WHERE pc.id_course = :id_course
 
 									UNION (
-										SELECT m.id, false AS 'participe'
+										SELECT m.id, false AS 'participe', ''
 										FROM membres m
 										WHERE m.id NOT IN (
 											SELECT pc.id_membre
@@ -144,6 +146,7 @@ class participation {
 			$membre->load();
 			$membres[$result['id_membre']]['membre'] = $membre;
 			$membres[$result['id_membre']]['participe'] = $result['participe'];
+			$membres[$result['id_membre']]['date'] = $result['date_creation'];
 		}
 		$this->listing = $membres;
 
@@ -153,12 +156,12 @@ class participation {
 		$pdo = PDO2::getInstance();
 		$courses = array();
 
-		$requete = $pdo->prepare("	SELECT pc.id_course, true AS 'participe'
+		$requete = $pdo->prepare("	SELECT pc.id_course, true AS 'participe', date_creation
 									FROM participations_courses pc
 									WHERE pc.id_membre = :id_membre
 									UNION
 									(
-										SELECT c.id, false AS 'participe'
+										SELECT c.id, false AS 'participe', ''
 										FROM courses c
 										WHERE c.id NOT IN (
 											SELECT pc.id_course
@@ -175,6 +178,7 @@ class participation {
 			$course->load();
 			$courses[$result['id_course']]['course'] = $course;
 			$courses[$result['id_course']]['participe'] = $result['participe'];
+			$courses[$result['id_course']]['date'] = $result['date_creation'];
 		}
 		$this->listing =  $courses;
 	}

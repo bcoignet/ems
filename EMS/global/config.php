@@ -44,3 +44,6 @@ define ('MEMBRE_PARTICIPE_OUI',  'Oui');
 define ('MEMBRE_PARTICIPE_NON',  'Non');
 define ('MEMBRE_PARTICIPE_PEUT_ETRE',  'Peut être');
 define ('MEMBRE_PARTICIPE_AUCUN',  '');
+
+define ('MEMBRE_INACTIF_OUI' , 'Oui');
+define ('MEMBRE_INACTIF_NON' , 'Non');
