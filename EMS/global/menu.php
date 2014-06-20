@@ -30,6 +30,7 @@
 
 					case '100':
 						echo '<ul>Membre';
+						echo '<li><a href="' . CHEMIN_BASE . 'index.php?module_utilisateurs&action=profil/"> Mon profil</a></li>';
 						echo '<li><a href="' . CHEMIN_BASE . 'index.php/"> rien 100</a></li>';
 						echo '</ul>';
 					default:

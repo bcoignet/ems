@@ -6,11 +6,11 @@ define ('CHEMIN_MODELE', 'modeles/');
 define ('CHEMIN_VUE_GLOBALE', 'vues_globales/');
 define ('CHEMIN_BASE', '/EMS/');
 
+define ('MAINTENANCE_DECLENCHEUR', 'maintenance.txt');
+
 define ('SQL_USERNAME', 'root');
 define ('SQL_PASSWORD', '');
 define ('SQL_DSN', 'mysql:host=127.0.0.1;port=3306;dbname=test2');
-
-define ('GRADE_ADMIN', '1');
 
 define ('SEXE_MASCULIN', 'm');
 define ('SEXE_FEMININ', 'f');
@@ -47,3 +47,7 @@ define ('MEMBRE_PARTICIPE_AUCUN',  '');
 
 define ('MEMBRE_INACTIF_OUI' , 'Oui');
 define ('MEMBRE_INACTIF_NON' , 'Non');
+
+define ('GRADE_ADMIN', '1');
+define ('GRADE_BUREAU', '10');
+define ('GRADE_MEMBRE', '100');

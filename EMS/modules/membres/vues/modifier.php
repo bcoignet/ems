@@ -37,5 +37,6 @@
 	<?php
 		echo $formDisponibiliteCourse;
 	?>
+	</div>
 
 </div>

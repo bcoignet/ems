@@ -78,14 +78,12 @@ table, tr, td, th
 #disponibilitesCourse, #disponibilitesMembre {
 	border: 1px solid black;
 	padding: 15px;
-    /*min-height:	250px;*/
     margin: 10px;
 	margin-top: 0;
 }
 
 #participationsCourse, #participationsMembre{
 	border: 1px solid black;
-	/*min-height: 250px;*/
 	margin: 10px;
 	padding: 15px;
 	margin-top: 0;
@@ -97,4 +95,8 @@ table, tr, td, th
 
 .miniInfos {
 	font-size: 65%;
+}
+
+.beaucoupDeDonnees {
+	font-size: 70%;
 }
