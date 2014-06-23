@@ -115,7 +115,6 @@ class participation {
 				$i++;
 			}
 		}
-		error_log('BCT : erreur participation' . var_export($this->listing, true));
 		$this->save();
 	}
 

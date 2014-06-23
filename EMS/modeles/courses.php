@@ -159,17 +159,17 @@ class course {
 		->value($this->defraiement)
 		->required(false);
 
-		$form_course->add('Text', 'date_debut')
+		$form_course->add('Text', 'debut')
 		->label("Début")
-		->value($this->dateDebut);
+		->value($this->debut);
 
 		/*$form_course->add('Text', 'heure_debut')
 		->label("Heure début")
 		->value($this->heureDebut);//*/
 
-		$form_course->add('Text', 'date_fin')
+		$form_course->add('Text', 'fin')
 		->label("Fin")
-		->value($this->dateFin);
+		->value($this->fin);
 
 		/*$form_course->add('Text', 'heure_fin')
 		->label("Heure fin")
@@ -288,10 +288,8 @@ class course {
 														ville,
 														organisation,
 														type_course,
-														date_debut,
-														date_fin,
-														heure_debut,
-														heure_fin,
+														debut,
+														fin,
 														moto_demande,
 														defraiement,
 														distance,
@@ -303,10 +301,8 @@ class course {
 														:ville,
 														:organisation,
 														:type_course,
-														:date_debut,
-														:date_fin,
-														:heure_debut,
-														:heure_fin,
+														:debut,
+														:fin,
 														:moto_demande,
 														:defraiement,
 														:distance,
@@ -320,8 +316,6 @@ class course {
 		$requete->bindValue(':type_course',    $this->typeCourse);
 		$requete->bindValue(':debut',    $this->debut);
 		$requete->bindValue(':fin',    $this->fin);
-		//$requete->bindValue(':heure_debut',    $this->heureDebut);
-		//$requete->bindValue(':heure_fin',    $this->heureFin);
 		$requete->bindValue(':moto_demande',    $this->motoDemande);
 		$requete->bindValue(':defraiement',    $this->defraiement);
 		$requete->bindValue(':distance',    $this->distance);

@@ -133,7 +133,6 @@ class disponibilite {
 			$membres[$result['id_membre']]['date_creation'] = $result['date_creation'];
 			$membres[$result['id_membre']]['date_maj'] = $result['date_maj'];
 		}
-		error_log('BCT : ' . var_export($membres, true));
 		$this->listing = $membres;
 
 	}

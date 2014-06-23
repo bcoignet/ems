@@ -19,18 +19,21 @@
 						echo '<li><a href="' . CHEMIN_BASE . 'index.php?module=courses&action=listing">Liste des courses </a></li>';
 						echo '<li><a href="' . CHEMIN_BASE . 'index.php?module=courses&action=creer">Créer une course </a></li>';
 						echo '<li><a href="' . CHEMIN_BASE . 'index.php?module=utilisateurs&action=listing">Liste des utilisateurs </a></li>';
+						echo '<li><a href="' . CHEMIN_BASE . 'index.php?module=utilisateurs&action=creer">Créer un utilisateur </a></li>';
 						echo '<li></li>';
 						echo '</ul>';
 
 					case '10':
 						echo '<ul>Bureau';
 						echo '<li><a href="' . CHEMIN_BASE . 'index.php/"> rien 10 </a></li>';
+						echo '<li><a href="' . CHEMIN_BASE . 'index.php/"> </a></li>';
 						echo '<li></li>';
 						echo '</ul>';
 
 					case '100':
 						echo '<ul>Membre';
-						echo '<li><a href="' . CHEMIN_BASE . 'index.php?module_utilisateurs&action=profil/"> Mon profil</a></li>';
+						echo '<li><a href="' . CHEMIN_BASE . 'index.php?module=utilisateurs&action=profil"> Profil </a></li>';
+						echo '<li><a href="' . CHEMIN_BASE . 'index.php?module=utilisateurs&action=presence"> Présence </a></li>';
 						echo '<li><a href="' . CHEMIN_BASE . 'index.php/"> rien 100</a></li>';
 						echo '</ul>';
 					default:

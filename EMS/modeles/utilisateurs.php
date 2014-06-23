@@ -147,17 +147,21 @@ class utilisateur {
 
 		$form_utilisateur->method('POST');
 
-		if ($this->inactif) {
+		if ($this->inactif === '1') {
 			$form_utilisateur->add('Checkbox', 'inactif')
 			->label('Inactif')
 			->value($this->inactif)
 			->required(false)
 			->checked();
 		}else {
+			if ($this->inactif === NULL) {
+				$this->inactif = '0';
+			}
 			$form_utilisateur->add('Checkbox', 'inactif')
 			->label('Inactif')
 			->value($this->inactif)
-			->required(false);
+			->required(false)
+			->checked(false);
 		}
 
 		$form_utilisateur->add('Text', 'nom_utilisateur')
@@ -175,11 +179,17 @@ class utilisateur {
 		$form_utilisateur->add('Password', 'mot_de_passe')
 		->label("Mot de passe")
 		->value($this->motDePasse)
+		->autocomplete(false)
 		->required(false);
 
 		$form_utilisateur->add('Password', 'mot_de_passe_confirme')
 		->label("Mot de passe (confirmation)")
 		->required(false);
+
+		$form_utilisateur->add('Text', 'adresse_email')
+		->label("Email")
+		->value($this->adresseMail)
+		->required(true);
 
 		$form_utilisateur->add('Text', 'avatar')
 		->label("Avatar")
@@ -255,7 +265,6 @@ class utilisateur {
 		return $form_utilisateur;
 	}
 
-
 	public function selectGradeMembre() {
 		return array('choix' => utilisateur::$choixGrade, 'selected' => $this->grade);
 	}
@@ -290,23 +299,36 @@ class utilisateur {
 		return array('choix' => $membresLibre, 'selected' => $this->membreRattache);
 	}
 
-
 	public function update($form) {
-		list($this->nom, $this->prenom, $this->avatar, $this->dateNaissance, $this->marqueMoto, $this->nomMoto, $this->typeMoto, $this->roleAsso, $this->typeMembre, $this->photo, $this->inactif, $this->nomUtilisateur, $this->membreRattache,
-				$this->ville, $this->rue, $this->codePostal, $this->batiment, $this->complement) =
-		$form->get_cleaned_data('nom', 'prenom', 'sexe', 'date_naissance', 'marque_moto', 'nom_moto', 'type_moto', 'role_asso', 'type_membre', 'photo', 'inactif', 'nom_utilisateur', 'membre_rattache',
-				'ville', 'rue', 'code_postal', 'batiment', 'complement');
+		$password = false;
+		list($this->nom, $this->prenom, $this->inactif, $this->nomUtilisateur, $this->membreRattache,
+				$this->ville, $this->rue, $this->codePostal, $this->batiment, $this->complement, $this->adresseMail, $this->avatar, $this->mobile, $this->fixe, $this->statut, $this->grade) =
+		$form->get_cleaned_data('nom', 'prenom', 'inactif', 'nom_utilisateur', 'membre_rattache',
+				'ville', 'rue', 'code_postal', 'batiment', 'complement', 'adresse_email', 'avatar', 'mobile', 'fixe', 'statut', 'grade');
+		list($pass1, $pass2) = $form->get_cleaned_data('mot_de_passe', 'mot_de_passe_confirme');
+		if ($pass1 !== '' && $pass1 === $pass2) {
+			$this->motDePasse = sha1($pass1);
+			$password = true;
+		}
 		if ($this->inactif === 'on') {
 			$this->inactif = '1';
 		}
+		error_log('BCT : ' . var_export($this, true));
+		error_log('BCT : ' . var_export($password, true));
+
 		if ($this->id === '0') {
-			$this->create();
+			$this->create($password);
 		}else {
-			$this->save();
+			$this->save($password);
 		}
 	}
 
 	private function save($password = FALSE) {
+		$passwordInsert = '';
+		if ($password) {
+			$passwordInsert = "mot_de_passe = :mot_de_passe, ";
+
+		}
 		$pdo = PDO2::getInstance();
 
 		$requete = $pdo->prepare("UPDATE utilisateurs SET
@@ -324,8 +346,9 @@ class utilisateur {
 		complement = :complement,
 		statut = :statut,
 		membre_rattache = :membre_rattache,
-		grade = :grade,
-		inactif = :inactif
+		grade = :grade,"
+		.$passwordInsert.
+		"inactif = :inactif
 		where id = :id");
 		$requete->bindValue(':nom_utilisateur', $this->nomUtilisateur);
 		$requete->bindValue(':adresse_email', $this->adresseMail);
@@ -345,14 +368,234 @@ class utilisateur {
 		$requete->bindValue(':inactif', $this->inactif);
 		$requete->bindValue(':id', $this->id);
 
+		if ($passwordInsert !== '') {
+			$requete->bindValue(':mot_de_passe', $this->motDePasse);
+		}
+
 		if ($requete->execute()) {
 			return $pdo->lastInsertId();
 		}
 
-		//$requete->closeCursor();
+		error_log('BCT : ' . var_export($requete->errorInfo(), true));
+		$requete->closeCursor();
 		return $requete->errorInfo();
 
 	}
 
+	private function create($password = FALSE) {
+		$passwordInsert1 = '';
+		$passwordInsert2 = '';
+		if ($password) {
+			$passwordInsert1 = "mot_de_passe, ";
+			$passwordInsert2 = ":mot_de_passe, ";
+
+		}
+		$pdo = PDO2::getInstance();
+		$requete = $pdo->prepare("INSERT INTO utilisateurs (nom_utilisateur,
+															adresse_email,
+															avatar,
+															nom,
+															prenom,
+															mobile,
+															fixe,
+															code_postal,
+															ville,"
+															.$passwordInsert1.
+															"rue,
+															batiment,
+															complement,
+															statut,
+															membre_rattache,
+															grade,
+															inactif)
+													values (
+															:nom_utilisateur,
+															:adresse_email,
+															:avatar,
+															:nom,
+															:prenom,
+															:mobile,
+															:fixe,
+															:code_postal,
+															:ville,"
+															.$passwordInsert2.
+															":rue,
+															:batiment,
+															:complement,
+															:statut,
+															:membre_rattache,
+															:grade,
+															:inactif
+															)");
+
+		$requete->bindValue(':nom_utilisateur', $this->nomUtilisateur);
+		$requete->bindValue(':adresse_email', $this->adresseMail);
+		$requete->bindValue(':avatar', $this->avatar);
+		$requete->bindValue(':nom', $this->nom);
+		$requete->bindValue(':prenom', $this->prenom);
+		$requete->bindValue(':mobile', $this->mobile);
+		$requete->bindValue(':fixe', $this->fixe);
+		$requete->bindValue(':code_postal', $this->codePostal);
+		$requete->bindValue(':ville', $this->ville);
+		$requete->bindValue(':rue', $this->rue);
+		$requete->bindValue(':batiment', $this->batiment);
+		$requete->bindValue(':complement', $this->complement);
+		$requete->bindValue(':statut', $this->statut);
+		$requete->bindValue(':membre_rattache', $this->membreRattache);
+		$requete->bindValue(':grade', $this->grade);
+		$requete->bindValue(':inactif', $this->inactif);
+
+		if ($passwordInsert1 !== '' && $passwordInsert2 !== '') {
+			$requete->bindValue(':mot_de_passe', $this->motDePasse);
+		}
+
+		if ($requete->execute()) {
+			$this->id = $pdo->lastInsertId();
+			return $pdo->lastInsertId();
+		}
+		error_log('BCT : ' . var_export($requete->errorInfo(), true));
+		$requete->closeCursor();
+		return $requete->errorInfo();
+	}
+
+	public function formulaireProfil() {
+		$arrGradeMembre = $this->selectGradeMembre();
+		$arrMembreDisponible = $this->selectMembreDisponible();
+
+		$form_utilisateur = new Form('formulaire_utilisateur_profil');
+
+		$form_utilisateur->method('POST');
+
+		if ($this->inactif === '0') {
+			$inactif = '0 ';
+		}else{
+			$inactif = $this->inactif;
+		}
+
+		$form_utilisateur->add('Hidden', 'inactif')
+		->label("Inactif2".$this->inactif)
+		->value($inactif);
+
+		$form_utilisateur->add('Hidden', 'nom_utilisateur')
+		->label("Pseudo")
+		->value($this->nomUtilisateur);
+
+		$form_utilisateur->add('Hidden', 'membre_rattache')
+		->label("Membre rattaché")
+		->value($this->membreRattache);
+
+		$form_utilisateur->add('Hidden', 'grade')
+		->label("Grade")
+		->value($this->grade);
+
+
+
+
+		$form_utilisateur->add('Text', 'nom_utilisateur_')
+		->label("Pseudo")
+		->value($this->nomUtilisateur)
+		->required(false)
+		->disabled();
+
+		$form_utilisateur->add('Text', 'nom')
+		->label("Nom")
+		->value($this->nom);
+
+		$form_utilisateur->add('Text', 'prenom')
+		->label("Prenom")
+		->value($this->prenom);
+
+		$form_utilisateur->add('Password', 'mot_de_passe')
+		->label("Mot de passe")
+		->value($this->motDePasse)
+		->autocomplete(false)
+		->required(false);
+
+		$form_utilisateur->add('Password', 'mot_de_passe_confirme')
+		->label("Mot de passe (confirmation)")
+		->required(false);
+
+		$form_utilisateur->add('Text', 'adresse_email')
+		->label("Email")
+		->value($this->adresseMail)
+		->required(true);
+
+		$form_utilisateur->add('Text', 'avatar')
+		->label("Avatar")
+		->value($this->avatar)
+		->required(false);
+
+		$form_utilisateur->add('Text', 'mobile')
+		->label("Mobile")
+		->value($this->mobile)
+		->required(false);
+
+		$form_utilisateur->add('Text', 'fixe')
+		->label("Fixe")
+		->value($this->fixe)
+		->required(false);
+
+		$form_utilisateur->add('Text', 'code_postal')
+		->label("Cde postal")
+		->value($this->codePostal)
+		->required(false);
+
+		$form_utilisateur->add('Text', 'ville')
+		->label("Ville")
+		->value($this->ville)
+		->required(false);
+
+		$form_utilisateur->add('Text', 'rue')
+		->label("Rue")
+		->value($this->rue)
+		->required(false);
+
+		$form_utilisateur->add('Text', 'batiment')
+		->label("Bâtiment")
+		->value($this->batiment)
+		->required(false);
+
+		$form_utilisateur->add('Text', 'complement')
+		->label("Complément")
+		->value($this->complement)
+		->required(false);
+
+		$form_utilisateur->add('Text', 'statut')
+		->label("Statut")
+		->value($this->statut)
+		->required(false);
+
+		$form_utilisateur->add('Select', 'membre_rattache_')
+		->label("Membre rattaché")
+		->choices($arrMembreDisponible['choix'])
+		->value($this->membreRattache)
+		->required(false)
+		->disabled();
+
+		$form_utilisateur->add('Select', 'grade_')
+		->label("Grade")
+		->choices($arrGradeMembre['choix'])
+		->value($this->grade)
+		->required(false)
+		->disabled();
+
+		$form_utilisateur->add('Submit', 'submit')
+		->value("Enregistrer");
+
+
+		$form_utilisateur->add('Date', 'date_maj')
+		->label("Date de MAJ")
+		->disabled()
+		->value($this->dateMaj)
+		->required(false);
+
+		$form_utilisateur->add('Date', 'date_creation')
+		->label("Date de création")
+		->value($this->dateCreation)
+		->disabled()
+		->required(false);
+
+		return $form_utilisateur;
+	}
 
 }
