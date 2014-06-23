@@ -16,8 +16,8 @@ if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_
 	if (isset($_POST['uniqid']) && $_POST['uniqid'] === 'formulaire_utilisateur') {
 		if ($formUtilisateur->is_valid($_POST)) {
 			$utilisateur->update($formUtilisateur);
-			//$message = 'Modification du membre ' . $utilisateur->getPrenom() . ' ' . $utilisateur->getNom() . ' enregistré.';
-			//header('location: ' . CHEMIN_BASE . 'index.php?module=utilisateur&action=modifier&id='.$utilisateur->getId().'&message=' . $message); //TODO ameliorer
+			$message = 'Modification du membre ' . $utilisateur->getPrenom() . ' ' . $utilisateur->getNom() . ' enregistré.';
+			header('location: ' . CHEMIN_BASE . 'index.php?module=utilisateurs&action=modifier&id='.$utilisateur->getId().'&message=' . $message); //TODO ameliorer
 		}
 
 	}

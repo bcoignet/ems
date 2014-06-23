@@ -47,6 +47,14 @@ class utilisateur {
 		return $this->id;
 	}
 
+	public function getNom() {
+		return $this->nom;
+	}
+
+	public function getPrenom() {
+		return $this->prenom;
+	}
+
 	public function load() {
 
 		$pdo = PDO2::getInstance();
@@ -284,8 +292,10 @@ class utilisateur {
 
 
 	public function update($form) {
-		list($this->nom, $this->prenom, $this->avatar, $this->dateNaissance, $this->marqueMoto, $this->nomMoto, $this->typeMoto, $this->roleAsso, $this->typeMembre, $this->photo, $this->inactif, $this->nomUtilisateur, $this->membreRattache) =
-		$form->get_cleaned_data('nom', 'prenom', 'sexe', 'date_naissance', 'marque_moto', 'nom_moto', 'type_moto', 'role_asso', 'type_membre', 'photo', 'inactif', 'nom_utilisateur', 'membre_rattache');
+		list($this->nom, $this->prenom, $this->avatar, $this->dateNaissance, $this->marqueMoto, $this->nomMoto, $this->typeMoto, $this->roleAsso, $this->typeMembre, $this->photo, $this->inactif, $this->nomUtilisateur, $this->membreRattache,
+				$this->ville, $this->rue, $this->codePostal, $this->batiment, $this->complement) =
+		$form->get_cleaned_data('nom', 'prenom', 'sexe', 'date_naissance', 'marque_moto', 'nom_moto', 'type_moto', 'role_asso', 'type_membre', 'photo', 'inactif', 'nom_utilisateur', 'membre_rattache',
+				'ville', 'rue', 'code_postal', 'batiment', 'complement');
 		if ($this->inactif === 'on') {
 			$this->inactif = '1';
 		}
