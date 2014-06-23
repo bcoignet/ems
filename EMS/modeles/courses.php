@@ -46,6 +46,14 @@ class course {
 		return $this->nom;
 	}
 
+	public function getDebut() {
+		return strftime('%a %#d %b %Y', strtotime ($this->debut));
+	}
+
+	public function getFin() {
+		return strftime('%a %#d %b %Y', strtotime ($this->fin));
+	}
+
 	public function load() {
 		$pdo = PDO2::getInstance();
 

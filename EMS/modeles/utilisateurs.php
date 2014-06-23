@@ -55,6 +55,10 @@ class utilisateur {
 		return $this->prenom;
 	}
 
+	public function getIdMembre() {
+		return $this->membreRattache;
+	}
+
 	public function load() {
 
 		$pdo = PDO2::getInstance();
@@ -313,8 +317,6 @@ class utilisateur {
 		if ($this->inactif === 'on') {
 			$this->inactif = '1';
 		}
-		error_log('BCT : ' . var_export($this, true));
-		error_log('BCT : ' . var_export($password, true));
 
 		if ($this->id === '0') {
 			$this->create($password);

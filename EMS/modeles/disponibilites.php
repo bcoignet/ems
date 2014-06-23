@@ -64,16 +64,8 @@ class disponibilite {
 			$course = $listing['course'];
 			$choixReponse = $this->selectReponse();
 
-			if ($listing['date_maj'] !== '0000-00-00 00:00:00') {
-				$date = '(' . $listing['date_maj'] . ')';
-			}elseif ($listing['date_creation'] !== '0000-00-00 00:00:00') {
-				$date = '(' . $listing['date_creation']. ')';
-			}else {
-				$date = '';
-			}
-
 			$form_disponibilite_course->add('SELECT', 'course_' . $course->getId())
-			->label($course->getNom() . ' <span class="miniInfos">' . $date . '</span>')
+			->label($course->getNom() . ' <span class="miniInfos">' . $course->getDebut() . '</span>')
 			->value($listing['reponse'])
 			->choices($choixReponse['choix'])
 			->required(false);

@@ -61,7 +61,7 @@ class participation {
 		return $form_membre_participant;
 	}
 
-	public function formParticipationCourse() {
+	public function formParticipationCourse($readonly = false) {
 		$form_participant_course = new Form('formulaire_participation_course');
 		$form_participant_course->method('POST');
 
@@ -69,24 +69,32 @@ class participation {
 		foreach ($this->listing as $listing) {
 			$course = $listing['course'];
 			$participe = $listing['participe'];
-			$date = $listing['date']; // TODO formatage de date
+			$date = $listing['course']->getDebut();
 
 			if ($participe === '1') {
+
 				$form_participant_course->add('Checkbox', 'course_' . $i)
-				->label($course->getNom() . ' <span class="miniInfos">(' . $date . ')</span>')
+				->label($course->getNom() . ' <span class="miniInfos">' . $date . '</span>')
 				->value($course->getId())
 				->required(false)
 				->checked();
 			} else {
 				$form_participant_course->add('Checkbox', 'course_' . $i)
-				->label($course->getNom())
+				->label($course->getNom() . ' <span class="miniInfos">' . $date . '</span>')
 				->value($course->getId())
 				->required(false);
+			}//*/
+			if ($_SESSION['utilisateur']->getGrade() > '0') {
+				$form_participant_course->field('course_' . $i)->disabled();
 			}
 			$i++;
 		}
 		$form_participant_course->add('Submit', 'submit')
 		->value("Enregistrer");
+		if ($_SESSION['utilisateur']->getGrade() > '0') {
+			$form_participant_course->field('submit')
+			->disabled();
+		}
 
 		return $form_participant_course;
 	}

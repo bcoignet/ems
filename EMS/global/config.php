@@ -51,3 +51,6 @@ define ('MEMBRE_INACTIF_NON' , 'Non');
 define ('GRADE_ADMIN', '1');
 define ('GRADE_BUREAU', '10');
 define ('GRADE_MEMBRE', '100');
+
+date_default_timezone_set('Europe/Paris');
+setlocale(LC_ALL, "");
