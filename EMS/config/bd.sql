@@ -40,6 +40,7 @@ CREATE TABLE utilisateurs (
 	statut				varchar(50)			NOT NULL,
 	grade				int(3)				NOT NULL DEFAULT '100',
 	membre_rattache		int(10)	unsigned	NOT NULL,
+	inactif				tynint(1)			NOT NULL DEFAULT '0',
 	
 	date_creation		TIMESTAMP			NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	date_maj			TIMESTAMP 			NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -204,6 +205,14 @@ DELIMITER $$
 CREATE TRIGGER utilisateurs_update BEFORE UPDATE ON utilisateurs
 FOR EACH ROW BEGIN
 SET NEW.date_maj = NOW();
+END;$$
+DELIMITER ;
+
+-- trigger utilisateurs inscription
+DELIMITER $$
+CREATE TRIGGER utilisateurs_create BEFORE INSERT ON utilisateurs
+FOR EACH ROW BEGIN
+SET NEW.date_inscription = NOW();
 END;$$
 DELIMITER ;
 
