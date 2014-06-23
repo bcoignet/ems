@@ -21,6 +21,7 @@ class utilisateur {
 	private $complement;
 	private $statut;
 	private $membreRattache;
+	private $inactif;
 	private $dateCreation;
 	private $dateMaj;
 
@@ -78,6 +79,7 @@ class utilisateur {
 			$this->complement = ($result['complement']);
 			$this->statut = ($result['statut']);
 			$this->membreRattache = ($result['membre_rattache']);
+			$this->inactif = $result['inactif'];
 			$this->dateCreation = ($result['date_creation']);
 			$this->dateMaj = ($result['date_creation']);
 		}
@@ -137,7 +139,6 @@ class utilisateur {
 
 		$form_utilisateur->method('POST');
 
-		/* // ajouter le champs inactif a un utilisateurs
 		if ($this->inactif) {
 			$form_utilisateur->add('Checkbox', 'inactif')
 			->label('Inactif')
@@ -149,7 +150,11 @@ class utilisateur {
 			->label('Inactif')
 			->value($this->inactif)
 			->required(false);
-		}//*/
+		}
+
+		$form_utilisateur->add('Text', 'nom_utilisateur')
+		->label("Pseudo")
+		->value($this->nomUtilisateur);
 
 		$form_utilisateur->add('Text', 'nom')
 		->label("Nom")
@@ -251,16 +256,26 @@ class utilisateur {
 		$membresLibre = array();
 		$pdo = PDO2::getInstance();
 
-		$requete = $pdo->prepare("	SELECT id from membres
+		$requete = $pdo->prepare("	SELECT id, nom, prenom  from membres
+									WHERE id = :id_membre_rattache");
+		$requete->bindValue(':id_membre_rattache', $this->membreRattache);
+		$requete->execute();
+		if ($result = $requete->fetch(PDO::FETCH_ASSOC)) {
+			$membresLibre[$result['id']] = $result['nom']. ' ' .$result['prenom'] . ' (actuel)';
+		}
+		$requete->closeCursor();
+
+		//
+
+		$requete = $pdo->prepare("	SELECT id, nom, prenom  from membres
 									WHERE id NOT IN (
-										SELECT id
+										SELECT membre_rattache
 										FROM utilisateurs
 										WHERE membre_rattache IS NOT NULL)");
 
 		$requete->execute();
-
 		while ($result = $requete->fetch(PDO::FETCH_ASSOC)) {
-			$membresLibre[] = $result['id'];
+			$membresLibre[$result['id']] = $result['nom'] . ' ' . $result['prenom'];
 		}
 		$requete->closeCursor();
 
@@ -269,8 +284,8 @@ class utilisateur {
 
 
 	public function update($form) {
-		list($this->nom, $this->prenom, $this->avatar, $this->dateNaissance, $this->marqueMoto, $this->nomMoto, $this->typeMoto, $this->roleAsso, $this->typeMembre, $this->photo, $this->inactif) =
-		$form->get_cleaned_data('nom', 'prenom', 'sexe', 'date_naissance', 'marque_moto', 'nom_moto', 'type_moto', 'role_asso', 'type_membre', 'photo', 'inactif');
+		list($this->nom, $this->prenom, $this->avatar, $this->dateNaissance, $this->marqueMoto, $this->nomMoto, $this->typeMoto, $this->roleAsso, $this->typeMembre, $this->photo, $this->inactif, $this->nomUtilisateur, $this->membreRattache) =
+		$form->get_cleaned_data('nom', 'prenom', 'sexe', 'date_naissance', 'marque_moto', 'nom_moto', 'type_moto', 'role_asso', 'type_membre', 'photo', 'inactif', 'nom_utilisateur', 'membre_rattache');
 		if ($this->inactif === 'on') {
 			$this->inactif = '1';
 		}
@@ -281,6 +296,53 @@ class utilisateur {
 		}
 	}
 
+	private function save($password = FALSE) {
+		$pdo = PDO2::getInstance();
+
+		$requete = $pdo->prepare("UPDATE utilisateurs SET
+        nom_utilisateur = :nom_utilisateur,
+		adresse_email = :adresse_email,
+		avatar = :avatar,
+		nom = :nom,
+		prenom = :prenom,
+		mobile = :mobile,
+		fixe = :fixe,
+		code_postal = :code_postal,
+		ville = :ville,
+		rue = :rue,
+		batiment = :batiment,
+		complement = :complement,
+		statut = :statut,
+		membre_rattache = :membre_rattache,
+		grade = :grade,
+		inactif = :inactif
+		where id = :id");
+		$requete->bindValue(':nom_utilisateur', $this->nomUtilisateur);
+		$requete->bindValue(':adresse_email', $this->adresseMail);
+		$requete->bindValue(':avatar', $this->avatar);
+		$requete->bindValue(':nom', $this->nom);
+		$requete->bindValue(':prenom', $this->prenom);
+		$requete->bindValue(':mobile', $this->mobile);
+		$requete->bindValue(':fixe', $this->fixe);
+		$requete->bindValue(':code_postal', $this->codePostal);
+		$requete->bindValue(':ville', $this->ville);
+		$requete->bindValue(':rue', $this->rue);
+		$requete->bindValue(':batiment', $this->batiment);
+		$requete->bindValue(':complement', $this->complement);
+		$requete->bindValue(':statut', $this->statut);
+		$requete->bindValue(':membre_rattache', $this->membreRattache);
+		$requete->bindValue(':grade', $this->grade);
+		$requete->bindValue(':inactif', $this->inactif);
+		$requete->bindValue(':id', $this->id);
+
+		if ($requete->execute()) {
+			return $pdo->lastInsertId();
+		}
+
+		//$requete->closeCursor();
+		return $requete->errorInfo();
+
+	}
 
 
 }
