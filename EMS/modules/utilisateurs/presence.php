@@ -14,11 +14,11 @@ if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_
 
 
 
-	$participation = new participation($idMembre, '0');
+	$participation = new participation($idMembre, '0', time());
 	$formParticipationCourse = $participation->formParticipationCourse();
 
 
-	$disponibilite = new disponibilite($idMembre, '0');
+	$disponibilite = new disponibilite($idMembre, '0', time());
 	$formDisponibiliteCourse = $disponibilite->formDisponibiliteCourse();
 
 	if (isset($_POST['uniqid']) && $_POST['uniqid'] === 'formulaire_disponibilite_course') {

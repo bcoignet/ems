@@ -6,6 +6,8 @@ require_once CHEMIN_LIB.'form.php';
 class disponibilite {
 	private $idMembre;
 	private $idCourse;
+	private $dateDebut;
+	private $dateFin;
 	private $dateCreation;
 	private $reponse;
 	private $listing;
@@ -13,11 +15,17 @@ class disponibilite {
 	private static $choixDisponibilite = array(	MEMBRE_PARTICIPE_OUI => 'Oui',
 												MEMBRE_PARTICIPE_NON => 'Non',
 												MEMBRE_PARTICIPE_PEUT_ETRE => 'Peut être',
-												MEMBRE_PARTICIPE_AUCUN => 'Non consulté');
+												MEMBRE_PARTICIPE_AUCUN => 'Non renseigné');
 
-	public function __construct($idMembre = '0', $idCourse = '0') {
+	public function __construct($idMembre = '0', $idCourse = '0', $dateDebut = '0', $dateFin = '0') {
 		$this->idCourse = $idCourse;
 		$this->idMembre = $idMembre;
+		$this->dateDebut = $dateDebut;
+		if ($dateFin === '0') {
+			$dateFin = time();
+		}
+		$this->dateFin = $dateFin;
+
 
 		if ($idMembre !== '0' && $idCourse !== '0'){
 			//$this->load();
@@ -111,7 +119,7 @@ class disponibilite {
 											SELECT id_membre from disponibilites_courses WHERE id_course = :id_course
 										)
 									)
-									ORDER BY id_membre
+									ORDER BY reponse DESC
 								");
 
 		$requete->bindValue(':id_course', $this->idCourse);
@@ -133,6 +141,7 @@ class disponibilite {
 		$pdo = PDO2::getInstance();
 		$courses = array();
 
+		/*
 		$requete = $pdo->prepare("	SELECT id_course, reponse, date_maj, date_creation
 									FROM disponibilites_courses WHERE id_membre = :id_membre
 									UNION
@@ -143,8 +152,29 @@ class disponibilite {
 										)
 
 									)
-				");
+				");//*/
+
+		$requete = $pdo->prepare("SELECT debut, fin, id_course, reponse, dc.date_maj, dc.date_creation
+FROM disponibilites_courses dc, courses c
+WHERE id_membre = :id_membre
+and dc.id_course = c.id
+and debut > :debut
+UNION
+(
+SELECT debut, fin, id, '', '0000-00-00 00:00:00', '0000-00-00 00:00:00'
+FROM courses where id not in (
+	SELECT id_course FROM disponibilites_courses dc, courses c
+	WHERE id_membre = :id_membre
+	and dc.id_course = c.id
+	and debut > :debut
+	)
+and debut > :debut
+
+)");
+
 		$requete->bindValue(':id_membre', $this->idMembre);
+		$requete->bindValue(':debut', date('Y-m-d', $this->dateDebut));
+
 		$requete->execute();
 
 		while ($result = $requete->fetch(PDO::FETCH_ASSOC)) {

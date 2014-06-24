@@ -6,12 +6,20 @@ require_once CHEMIN_LIB.'form.php';
 class participation {
 	private $idMembre;
 	private $idCourse;
+	private $dateDebut;
+	private $dateFin;
 	private $dateCreation;
 	private $listing;
 
-	public function __construct($idMembre = '0', $idCourse = '0') {
+	public function __construct($idMembre = '0', $idCourse = '0', $dateDebut = '0', $dateFin = '0') {
+
 		$this->idCourse = $idCourse;
 		$this->idMembre = $idMembre;
+		$this->dateDebut = $dateDebut;
+		if ($dateFin === '0') {
+			$dateFin = time();
+		}
+		$this->dateFin = $dateFin;
 
 		if ($idMembre !== '0' && $idCourse !== '0'){
 			//$this->load();
@@ -84,14 +92,14 @@ class participation {
 				->value($course->getId())
 				->required(false);
 			}//*/
-			if ($_SESSION['utilisateur']->getGrade() > '0') {
+			if ($_SESSION['utilisateur']->getGrade() > GRADE_BUREAU) {
 				$form_participant_course->field('course_' . $i)->disabled();
 			}
 			$i++;
 		}
 		$form_participant_course->add('Submit', 'submit')
 		->value("Enregistrer");
-		if ($_SESSION['utilisateur']->getGrade() > '0') {
+		if ($_SESSION['utilisateur']->getGrade() > GRADE_BUREAU) {
 			$form_participant_course->field('submit')
 			->disabled();
 		}
@@ -163,21 +171,24 @@ class participation {
 		$pdo = PDO2::getInstance();
 		$courses = array();
 
-		$requete = $pdo->prepare("	SELECT pc.id_course, true AS 'participe', date_creation
-									FROM participations_courses pc
-									WHERE pc.id_membre = :id_membre
-									UNION
-									(
-										SELECT c.id, false AS 'participe', ''
-										FROM courses c
-										WHERE c.id NOT IN (
-											SELECT pc.id_course
-											FROM participations_courses pc
-											WHERE pc.id_membre = :id_membre)
-									)
-									order by id_course
-				");
+		$requete = $pdo->prepare("SELECT debut, fin, pc.id_course, true AS 'participe', pc.date_creation
+FROM participations_courses pc, courses c
+WHERE pc.id_membre = :id_membre
+and pc.id_course = c.id
+and debut > :debut
+UNION
+(
+SELECT debut, fin, c.id, false AS 'participe', ''
+FROM courses c where c.id not in (
+	SELECT pc.id_course FROM participations_courses pc, courses c
+	WHERE pc.id_membre = :id_membre
+	and pc.id_course = c.id
+	and debut > :debut
+	)
+and debut > :debut
+				)");//*/
 		$requete->bindValue(':id_membre', $this->idMembre);
+		$requete->bindValue(':debut', date('Y-m-d', $this->dateDebut));
 		$requete->execute();
 
 		while ($result = $requete->fetch(PDO::FETCH_ASSOC)) {
