@@ -124,3 +124,25 @@ table, tr, td, th
 	font-weight: bold;
 	
 }
+
+li.participe {
+	font-weight: bold;
+}
+
+span.participe {
+	color: green;
+}
+
+span.intituleParticipant {
+	display: inline-block;
+	width: 180px;
+}
+
+span.nonRenseigne {
+	color: red;
+	font-weight: bold;
+}
+
+li.nonRenseigne {
+	font-weight: bold;
+} 

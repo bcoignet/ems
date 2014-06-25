@@ -1,5 +1,5 @@
 <?php
-if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_ADMIN && isset($_GET['id'])) {
+if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_MEMBRE && isset($_GET['id'])) {
 
 	require_once CHEMIN_MODELE.'courses.php';
 	require_once CHEMIN_MODELE.'participations.php';
@@ -11,14 +11,14 @@ if (utilisateur_est_connecte() && $_SESSION['utilisateur']->getGrade() <= GRADE_
 	$course = new course($idCourse);
 	$course->load();
 
-	$formCourse =  $course->formulaireEdition();
+	//$formCourse =  $course->formulaireEdition();
 
 	$participation = new participation('0', $idCourse);
-	$formMembreParticipant = $participation->formMembreParticipant();
+	$participants = $participation->getParticipants();
 
 
 	$disponibilite = new disponibilite('0', $idCourse);
-	$formMembreDisponible = $disponibilite->formMembreDisponible();
+	$disponibles = $disponibilite->getDisponible();
 
 
 	require_once CHEMIN_VUE.'consulter.php';

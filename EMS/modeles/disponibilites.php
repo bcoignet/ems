@@ -189,6 +189,36 @@ and debut > :debut
 		$this->listing =  $courses;
 	}
 
+	public function getDisponible() {
+		$disponibles = array();
+
+		$i = 0;
+		foreach ($this->listing as $listing) {
+			$membre = $listing['membre'];
+			$participe = $listing['reponse'];
+			$disponibles[$i]['intitule'] = $membre->getNom() . ' ' . $membre->getPrenom();
+			$disponibles[$i]['reponse'] = $participe;
+			$i++;
+		}
+
+		return $disponibles;
+
+/*
+		foreach ($this->listing as $listing) {
+			$membre = $listing['membre'];
+			$choixReponse = $this->selectReponse();
+			$form_membre_disponible->add('SELECT', 'membre_' . $membre->getId())
+			->label($membre->getNom() . ' ' . $membre->getPrenom())
+			->value($listing['reponse'])
+			->choices($choixReponse['choix'])
+			->required(false);
+		}
+		$form_membre_disponible->add('Submit', 'submit')
+		->value("Enregistrer");
+
+		return $form_membre_disponible;//*/
+	}
+
 	private function save() {
 		if ($this->idMembre === '0' && $this->idCourse !== '0') {
 			if ($this->cleanDisponibiliteCourse()) {

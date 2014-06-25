@@ -150,7 +150,7 @@ class participation {
 											FROM participations_courses pc
 											WHERE pc.id_course = :id_course)
 									)
-									order by id_membre
+									order by participe DESC
 								");
 
 		$requete->bindValue(':id_course', $this->idCourse);
@@ -172,22 +172,22 @@ class participation {
 		$courses = array();
 
 		$requete = $pdo->prepare("SELECT debut, fin, pc.id_course, true AS 'participe', pc.date_creation
-FROM participations_courses pc, courses c
-WHERE pc.id_membre = :id_membre
-and pc.id_course = c.id
-and debut > :debut
-UNION
-(
-SELECT debut, fin, c.id, false AS 'participe', ''
-FROM courses c where c.id not in (
-	SELECT pc.id_course FROM participations_courses pc, courses c
-	WHERE pc.id_membre = :id_membre
-	and pc.id_course = c.id
-	and debut > :debut
-	)
-and debut > :debut
+			FROM participations_courses pc, courses c
+			WHERE pc.id_membre = :id_membre
+			and pc.id_course = c.id
+			and debut > :debut
+			UNION
+			(
+			SELECT debut, fin, c.id, false AS 'participe', ''
+			FROM courses c where c.id not in (
+				SELECT pc.id_course FROM participations_courses pc, courses c
+				WHERE pc.id_membre = :id_membre
+				and pc.id_course = c.id
+				and debut > :debut
 				)
-ORDER BY debut");//*/
+			and debut > :debut
+							)
+			ORDER BY debut");//*/
 		$requete->bindValue(':id_membre', $this->idMembre);
 		$requete->bindValue(':debut', date('Y-m-d', $this->dateDebut));
 		$requete->execute();
@@ -273,5 +273,21 @@ ORDER BY debut");//*/
 		}
 		return $i;
 	}
+
+	public function getParticipants() {
+		$participants = array();
+
+		$i = 0;
+		foreach ($this->listing as $listing) {
+			$membre = $listing['membre'];
+			$participe = $listing['participe'];
+			$participants[$i]['intitule'] = $membre->getNom() . ' ' . $membre->getPrenom();
+			$participants[$i]['reponse'] = ($participe === '1' ? REPONSE_AFFIRMATIVE : REPONSE_NEGATIVE);
+			$i++;
+		}
+
+		return $participants;
+	}
+
 
 }

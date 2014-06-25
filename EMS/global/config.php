@@ -52,5 +52,9 @@ define ('GRADE_ADMIN', '1');
 define ('GRADE_BUREAU', '10');
 define ('GRADE_MEMBRE', '100');
 
+define ('REPONSE_AFFIRMATIVE', 'Oui');
+define ('REPONSE_NEGATIVE', 'Non');
+
+
 date_default_timezone_set('Europe/Paris');
 setlocale(LC_ALL, "");
