@@ -46,12 +46,50 @@ class course {
 		return $this->nom;
 	}
 
-	public function getDebut() {
+	public function getDebut($h=false) {
+		if ($h) {
+			return strftime('%a %#d %b %Y %H:%M', strtotime ($this->debut));
+		}
 		return strftime('%a %#d %b %Y', strtotime ($this->debut));
 	}
 
-	public function getFin() {
+	public function getFin($h=false) {
+		if ($h) {
+			return strftime('%a %#d %b %Y %H:%M', strtotime ($this->fin));
+		}
 		return strftime('%a %#d %b %Y', strtotime ($this->fin));
+	}
+
+	public function getOrganisation() {
+		return $this->organisation;
+	}
+
+	public function getVille() {
+		return $this->ville;
+	}
+
+	public function getDefraiement() {
+		return $this->defraiement;
+	}
+
+	public function getMotoDemande() {
+		return $this->motoDemande;
+	}
+
+	public function getDistance() {
+		return $this->distance;
+	}
+
+	public function getNbCoureurs() {
+		return $this->nbCoureurs;
+	}
+
+	public function getStatut() {
+		return $this->statut;
+	}
+
+	public function getDateMAJ() {
+		return $this->dateMaj;
 	}
 
 	public function load() {

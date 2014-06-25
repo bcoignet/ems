@@ -100,3 +100,27 @@ table, tr, td, th
 .beaucoupDeDonnees {
 	font-size: 70%;
 }
+
+.infosCourse {
+	border: 1px solid black;
+}
+
+.div2 {
+	float: left;
+	width: 49.6%;
+}
+
+.div3 {
+	float: left;
+	width: 33%;
+}
+
+.div1 {
+	float: left;
+	width: 99.4%;
+}
+
+.attributCourse {
+	font-weight: bold;
+	
+}

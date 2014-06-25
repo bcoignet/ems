@@ -186,7 +186,8 @@ FROM courses c where c.id not in (
 	and debut > :debut
 	)
 and debut > :debut
-				)");//*/
+				)
+ORDER BY debut");//*/
 		$requete->bindValue(':id_membre', $this->idMembre);
 		$requete->bindValue(':debut', date('Y-m-d', $this->dateDebut));
 		$requete->execute();
